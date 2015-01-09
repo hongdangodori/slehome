@@ -1,0 +1,18 @@
+{% extends "sitesle_base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    {% if not user.is_authenticated %}
+    <h1>Login your accounts</h1>
+    <p>please</p>
+    {% else %}
+    <h1>{{ user.username }} hi!</h1> 
+    <p>^.^</p>
+    {% endif %}
+    <p>
+        <a class="btn btn-primary btn-large">
+            Learn more
+        </a>
+    </p>
+</div>
+{% endblock %}
