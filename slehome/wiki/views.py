@@ -60,18 +60,6 @@ def search_page(request):
 		page=page_object
 		for word in search_key_list:
 			page=page.filter(Q(page_name__contains=word) | Q(content__contains=word))
-		# page = page_object
-		# for word in search_key_list:
-		# 	page=page_object.filter(page_name__contains=word)
-		# 	page_list += page
-		
-		# page = page_object
-
-		# for word in search_key_list:
-		# 	try:
-		# 		page=page.filter(content__contains=word)
-		# 	except Page.DoesNotExist:
-		# 		return HttpResponse(""+search_key+"에 대한 페이지가 없습니다.")	
 		
 		page_list += page
 		page_list = list(set(page_list))
