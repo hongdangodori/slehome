@@ -1,0 +1,24 @@
+{% extends "wiki_base.html" %}
+{% block title %}
+
+"{{search_key}}" 검색 결과
+
+{% endblock %}
+
+
+{% block content %}
+<h1>"{{search_key}}" 검색 결과</h1>
+
+{% for page_data in page %}
+	{% autoescape off %}
+	<div>
+		<a href="/sle/wiki/{{page_data.page_name}}"><h3>{{page_data.page_name}}</h3></a>
+		<br />
+		{{page_data.content}}
+	</div>
+	<hr />	
+	{% endautoescape %}
+{% endfor %}
+
+
+{% endblock %}

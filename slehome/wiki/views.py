@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.core.context_processors import csrf
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from wiki.models import Page, FilePath
+from django.db.models import Q
 import datetime
 # Create your views here.
 
@@ -39,5 +40,44 @@ def save_page(request,page_name):
 		page.pub_date=datetime.datetime.now()
 	except Page.DoesNotExist:
 		page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now())
+
 	page.save()
 	return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
+
+def search_page(request):
+	search_key=request.POST["search_key"]
+	search_key_list=search_key.split()
+	page_object=Page.objects
+	page_list=[]
+
+	test=""
+	try:
+		page=page_object.get(page_name=search_key)
+		c={"page_name":page.page_name , "content":page.content, "pub_date":page.pub_date}	
+		return render(request,"view.html",c)
+
+	except Page.DoesNotExist:
+		page=page_object
+		for word in search_key_list:
+			page=page.filter(Q(page_name__contains=word) | Q(content__contains=word))
+		# page = page_object
+		# for word in search_key_list:
+		# 	page=page_object.filter(page_name__contains=word)
+		# 	page_list += page
+		
+		# page = page_object
+
+		# for word in search_key_list:
+		# 	try:
+		# 		page=page.filter(content__contains=word)
+		# 	except Page.DoesNotExist:
+		# 		return HttpResponse(""+search_key+"에 대한 페이지가 없습니다.")	
+		
+		page_list += page
+		page_list = list(set(page_list))
+
+		c={"page":page_list , "search_key":search_key}	
+	
+		return render(request,"search.html",c)	
+
+	

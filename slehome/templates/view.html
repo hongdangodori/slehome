@@ -1,19 +1,24 @@
-<html>
-	<head>
-		<title>{{page_name}}</title>
-	</head>
-	<body>
-		<h1>{{page_name}}</h1>
-		<div>
-			{% autoescape off %}
-			{{content}}
-			{% endautoescape %}
-		</div>
-		<hr />
-		<dib>
-			{{pub_date}}
-		</div>
-		<hr />
-		<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
-	</body>
-</html>
+{% extends "wiki_base.html" %}
+{% block title %}
+
+{{page_name}}
+
+{% endblock %}
+
+
+{% block content %}
+<h1>{{page_name}}</h1>
+	<div>
+		{{pub_date}}
+	</div>
+	<hr/>
+	<div>
+		{% autoescape off %}
+		{{content}}
+		{% endautoescape %}
+	</div>
+	<hr />
+	
+	<hr />
+<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
+{% endblock %}
