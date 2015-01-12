@@ -12,7 +12,9 @@ def view_page(request, page_name=''):
 		page_name = 'FrontPage'
 
 	try:
-		page = Page.objects.get(page_name=page_name)
+		page = Page.objects.filter(page_name=page_name)
+		if len(page) > 0 :
+			page = page[len(page)-1]
 	except Page.DoesNotExist:
 		return render(request,"create.html",{"page_name":page_name})
 	
@@ -24,7 +26,9 @@ def view_page(request, page_name=''):
 
 def edit_page(request,page_name):
 	try:
-		page = Page.objects.get(page_name=page_name)
+		page = Page.objects.filter(page_name=page_name)
+		if len(page) > 0 :
+			page = page[len(page)-1]
 		content = page.content
 	except Page.DoesNotExist:
 		content = ""
@@ -34,12 +38,7 @@ def edit_page(request,page_name):
 
 def save_page(request,page_name):
 	content=request.POST["content"]
-	try:
-		page=Page.objects.get(page_name=page_name)
-		page.content=content
-		page.pub_date=datetime.datetime.now()
-	except Page.DoesNotExist:
-		page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now())
+	page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now())
 
 	page.save()
 	return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
@@ -51,21 +50,35 @@ def search_page(request):
 	page_list=[]
 
 	test=""
-	try:
-		page=page_object.get(page_name=search_key)
+	page=page_object.filter(page_name=search_key)
+	if len(page) > 0 :
+		page = page[len(page)-1]
 		c={"page_name":page.page_name , "content":page.content, "pub_date":page.pub_date}	
 		return render(request,"view.html",c)
 
-	except Page.DoesNotExist:
+	else:
 		page=page_object
 		for word in search_key_list:
 			page=page.filter(Q(page_name__contains=word) | Q(content__contains=word))
+			page_list += page
+
+		temp_list = list(set(page_list))		
+		page_list = []
+
+		for element in temp_list:
+			count = 0
+			if len(page_list) == 0 :
+		 		page_list.append(element)
+			else:
+		 		for temp in page_list:
+		 			if temp.page_name == element.page_name:
+		 				count = 1
+		 				break
 		
-		page_list += page
-		page_list = list(set(page_list))
+		 		if count == 0:
+		 			page_list.append(element)
 
 		c={"page":page_list , "search_key":search_key}	
 	
 		return render(request,"search.html",c)	
 
-	
