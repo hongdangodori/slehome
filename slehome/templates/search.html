@@ -12,7 +12,7 @@
 {% for page_data in page %}
 	{% autoescape off %}
 	<div>
-		<a href="/sle/wiki/{{page_data.page_name}}"><h3>{{page_data.page_name}}</h3></a>
+		<a href="/sle/wiki/{{page_data.page_name}}/"><h3>{{page_data.page_name}}</h3></a>
 		<br />
 		{{page_data.content}}
 	</div>

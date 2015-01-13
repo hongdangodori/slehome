@@ -7,21 +7,28 @@ import datetime
 # Create your views here.
 
 
-def view_page(request, page_name=''):
+def view_page(request, page_name='',page_num=''):
+	is_history = False
 	if page_name == '':
 		page_name = 'FrontPage'
-
-	try:
-		page = Page.objects.filter(page_name=page_name)
-		if len(page) > 0 :
-			page = page[len(page)-1]
-	except Page.DoesNotExist:
-		return render(request,"create.html",{"page_name":page_name})
 	
+	page = Page.objects.filter(page_name=page_name)
+	if len(page) > 0 :
+		if page_num != '' and page_num != '1':
+			try:
+				is_history = True
+				page = page[len(page)-int(page_num)]
+			except:
+				c={"alert":"페이지가 없습니다."}
+				return render(request,"alert.html",c)
+		else:
+			page = page[len(page)-1]
+	else:
+		return render(request,"create.html",{"page_name":page_name})
+
 	content = page.content
 	pub_date=page.pub_date
-	c={"page_name":page_name,"content":content,"pub_date":pub_date}	
-	
+	c={"page_name":page_name,"content":content,"pub_date":pub_date,"is_history":is_history}	 
 	return render(request,"view.html",c)
 
 def edit_page(request,page_name):
@@ -38,9 +45,14 @@ def edit_page(request,page_name):
 
 def save_page(request,page_name):
 	content=request.POST["content"]
-	page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now())
-
-	page.save()
+	page=Page.objects.filter(page_name=page_name)
+	page=page[len(page)-1]
+	if page.content != content :
+		page.new_version=False
+		page.save()
+		page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now(),new_version=True)
+		page.save()
+		
 	return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
 
 def search_page(request):
@@ -49,12 +61,11 @@ def search_page(request):
 	page_object=Page.objects
 	page_list=[]
 
-	test=""
+	# test=""
 	page=page_object.filter(page_name=search_key)
 	if len(page) > 0 :
 		page = page[len(page)-1]
-		c={"page_name":page.page_name , "content":page.content, "pub_date":page.pub_date}	
-		return render(request,"view.html",c)
+		return HttpResponseRedirect("/sle/wiki/"+page.page_name+"/")
 
 	else:
 		page=page_object
@@ -66,20 +77,37 @@ def search_page(request):
 		temp_list = list(set(page_list))		
 		page_list = []
 
-		for element in temp_list:
+		for temp in temp_list:
 			count = 0
-			if len(page_list) == 0 :
-		 		page_list.append(element)
-			else:
-		 		for temp in page_list:
-		 			if temp.page_name == element.page_name:
-		 				count = 1
-		 				break
-		
-		 		if count == 0:
-		 			page_list.append(element)
+			if temp.new_version == True :
+				if len(page_list) == 0 :
+			 		page_list.append(temp)
+				else:
+			 		for p in page_list:
+			 			if p.page_name == temp.page_name:
+			 				count = 1
+			 				break
+			
+			 		if count == 0:
+			 			page_list.append(temp)
 
 		c={"page":page_list , "search_key":search_key}	
 	
 		return render(request,"search.html",c)	
 
+
+def history_page(request,page_name=''):
+	if page_name == '':
+		c={'alert':'페이지 이름이 없습니다.'}
+		return render(request,"alert.html",c)
+
+	else:
+		page_list = Page.objects.filter(page_name=page_name)
+		count = 0
+		p = []
+		for page in page_list[::-1]:
+			count += 1
+			p.append({"pub_date":page.pub_date,"count":count})
+
+		c={"page":p,"page_name":page_name}
+		return render(request,"history.html",c)

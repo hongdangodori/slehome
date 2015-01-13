@@ -1,0 +1,17 @@
+{% extends "wiki_base.html" %}
+{% block title %}
+
+{{alert}}
+
+{% endblock %}
+
+
+{% block content %}
+
+<script type="text/javascript">
+	window.alert("{{alert}}");
+	history.back();
+</script>
+
+
+{% endblock %}

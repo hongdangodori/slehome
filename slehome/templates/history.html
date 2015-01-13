@@ -1,0 +1,18 @@
+{% extends "wiki_base.html" %}
+{% block title %}
+
+{{page_name}} - history
+
+{% endblock %}
+
+
+{% block content %}
+<h1>{{page_name}}</h1>
+<div>	
+	{% for page_data in page %}
+		<p>
+			{{page_name}} <a href="/sle/wiki/{{page_name}}/{{page_data.count}}/">{{page_data.pub_date}}</a>
+		</p>
+	{% endfor %}
+</div>
+{% endblock %}

@@ -7,7 +7,7 @@
 
 
 {% block content %}
-<h1>{{page_name}}</h1>
+	<h1>{{page_name}}</h1>
 	<div>
 		{{pub_date}}
 	</div>
@@ -20,5 +20,8 @@
 	<hr />
 	
 	<hr />
-<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
+	{% if is_history == False %}
+		<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
+	{% endif %}
+
 {% endblock %}

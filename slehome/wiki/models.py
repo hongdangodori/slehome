@@ -8,6 +8,7 @@ class Page(models.Model):
 	content = models.TextField(null=True)
 	author = models.IntegerField(default=0)
 	pub_date = models.DateTimeField('date published')
+	new_version = models.BooleanField(default=False)
 
 
 class FilePath(models.Model):
