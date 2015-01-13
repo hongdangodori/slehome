@@ -60,8 +60,9 @@ def search_page(request):
 		page=page_object
 		for word in search_key_list:
 			page=page.filter(Q(page_name__contains=word) | Q(content__contains=word))
-			page_list += page
+			# page_list += page
 
+		page_list += page
 		temp_list = list(set(page_list))		
 		page_list = []
 
