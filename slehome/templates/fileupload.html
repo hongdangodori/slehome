@@ -1,0 +1,17 @@
+{% extends "wiki_base.html" %}
+{% block title %}
+
+{{page_name}} - file upload
+
+{% endblock %}
+
+
+{% block content %}
+<h1>Editing {{page_name}}</h1>
+
+<form method="post" action="/sle/wiki/{{page_name}}/upload/">{% csrf_token %}
+	<textarea name="content" rows="20" cols="60">{{content}}</textarea>
+	<br/>
+	<input type="submit" value="Save Page"/>
+</form>
+{% endblock %}

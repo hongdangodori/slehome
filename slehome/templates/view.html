@@ -7,21 +7,46 @@
 
 
 {% block content %}
-	<h1>{{page_name}}</h1>
-	<div>
-		{{pub_date}}
-	</div>
-	<hr/>
-	<div>
-		{% autoescape off %}
-		{{content}}
-		{% endautoescape %}
-	</div>
-	<hr />
 	
-	<hr />
-	{% if is_history == False %}
-		<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
-	{% endif %}
+	<div class='container'>
+		<h1>{{page_name}}</h1>
+		
+		<div>
+			{{pub_date}}
 
+			{% if is_history == False %}
+				<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
+			{% endif %}
+		</div>
+		<hr />
+		<div class='container'>	
+			{% for file_data in file_list %}
+			<p>
+				<a href='/sle/wiki/{{page_name}}/download/{{file_data.count}}/'>{{file_data.file_name}}</a>
+			</p>
+		{% endfor %}
+		{% if is_history == False %}
+	
+			<form  class="form-inline" action="/sle/wiki/{{page_name}}/upload/" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
+				<div class="form-group">
+					<input type="file" name="file" id="id_file" />
+				</div>
+				<div class="form-group">
+					<input type='submit' class='btn btn-success' value='파일 업로드'>
+				</div>
+			</form>
+		
+		{% endif %}
+		</div>
+		<hr />	
+		<div>
+			{% autoescape off %}
+			{{content}}
+			{% endautoescape %}
+		</div>
+		<hr />
+		
+		<hr />
+		
+	</div>
 {% endblock %}

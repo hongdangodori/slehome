@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 
 # Create your models here.
@@ -12,6 +13,9 @@ class Page(models.Model):
 
 
 class FilePath(models.Model):
-	page = models.ForeignKey(Page)
-	file_path = models.TextField(null=True)
+	# page = models.ForeignKey(Page)
+	page_name =models.CharField(max_length=20, null=True)
+	upload_path = models.CharField(max_length=30,default='/home/sle/upload/')
+	file_name =models.TextField(null=True)
+	# dummy_name = models.CharField(max_length=20,null=True)
 
