@@ -11,7 +11,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^sle/$', 'sitesle.views.home', name='home'),
-    url(r'^sle/freeboards/', include('freeboards.urls'), namespace="freeboards"),
+    url(r'^sle/freeboards/', include('freeboards.urls'), name="freeboards"),
     url(r'^sle/wiki/$', 'wiki.views.view_page'),
     url(r'^sle/wiki/search/$', 'wiki.views.search_page'),
     url(r'^sle/wiki/(?P<page_name>[^/]+)/$', 'wiki.views.view_page'),
