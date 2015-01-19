@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class FreeBoard(models.Model):
 	user = models.CharField(max_length=20, blank=True)
-	category = models.CharField(max_length=30, blank=true)
+	category = models.CharField(max_length=30, blank=True)
 	title = models.CharField(max_length=50, blank=True)
 	contents = models.TextField(blank = True)
 	pub_date = models.DateField(null=True, blank=True)
@@ -13,4 +13,3 @@ class FreeBoard(models.Model):
 
 	def __str__(self):
 		return self.title
-		
