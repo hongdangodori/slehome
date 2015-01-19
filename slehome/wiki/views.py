@@ -8,6 +8,7 @@ import datetime
 import os, sys
 from django.core.servers.basehttp import FileWrapper
 import codecs
+import random, string
 
 def view_page(request, page_name='',page_num=''):
 	is_history = False
@@ -125,19 +126,28 @@ def history_page(request,page_name=''):
 		return render(request,"history.html",c)
 
 def upload_page(request,page_name=''):
+	c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 	if request.method == 'POST':
+		dummy_name =''
+		is_exist = True
+		while is_exist == True:
+			dummy_name=''.join(random.sample(c,15))
+			f=FilePath.objects.filter(dummy_name=dummy_name)
+			if len(f) == 0 :
+				is_exist = False
+
 		UPLOAD_DIR = '/home/sle/upload'
 		if 'file' in request.FILES:
 			file = request.FILES['file']
 			file_name = file._name
 
-		fp = open('%s/%s' % (UPLOAD_DIR, file_name.encode('utf-8')) , 'wb')
+		fp = open('%s/%s' % (UPLOAD_DIR, dummy_name) , 'wb')
 		for chunk in file.chunks():
 			fp.write(chunk)
 
 		fp.close()
 
-		f = FilePath(page_name=page_name, upload_path=UPLOAD_DIR, file_name=file_name.encode('utf-8'))
+		f = FilePath(page_name=page_name, upload_path=UPLOAD_DIR, file_name=file_name.encode('utf-8'), dummy_name=dummy_name)
 		f.save()
 
 		c={'alert': '올리신 '+file_name+' 파일이 업로드 되었습니다.','location':'/sle/wiki/'+page_name}
@@ -160,7 +170,7 @@ def download_page(request,page_name='',file_num=''):
 
 	file_data = file_data_list[int(file_num)-1]
 	
-	full_file_name = file_data.upload_path +'/'+ str(file_data.file_name.encode("utf-8"))
+	full_file_name = file_data.upload_path +'/'+ str(file_data.dummy_name)
 	f=open(full_file_name,'rb')
 	wrapper = FileWrapper(f)
 
@@ -171,35 +181,23 @@ def download_page(request,page_name='',file_num=''):
 	# c={'content':'attachment; filename=' + str(file_data.file_name.encode("utf-8").decode('utf-8'))}
 	# return render(request,'view.html',c)
 	return response
-	# if page_name == '' or file_num == '':
-	# 	c={'alert':'잘못된 다운로드 요청입니다.'}
-	# 	return render(request,"alert.html",c)
-
-	# file_data_list = FilePath.objects.filter(page_name=page_name)
-
-	# file_data = file_data_list[int(file_num)-1]
-	# filename =file_data.file_name
-
-	# file_path = reduce(os.path.join, (file_data.upload_path, filename))
-	# if os.path.exists(file_path) and os.path.isfile(file_path):
-	# 	with open(file_path, 'rb') as fp:
-	# 		response = HttpResponse(fp.read())
-	# 	content_type, encoding = mimetypes.guess_type(filename)
-	# 	if content_type is None:
-	# 		content_type = 'application/octet-stream'
-	# 	response['Content-Type'] = content_type
-	# 	response['Content-Length'] = str(os.stat(file_path).st_size)
-	# if encoding is not None:
-	# 	response['Content-Encoding'] = encoding
-	# if u'WebKit' in request.META.get('HTTP_USER_AGENT', u'Webkit'):
-	# 	filename_header = 'filename="%s"' % filename.encode('utf-8')
-	# elif u'MSIE' in request.META.get('HTTP_USER_AGENT', u'MSIE'):
-	# 	filename_header = ""
-	# else:
-	# 	filename_header = 'filename*=UTF-8\'\'%s' % urllib.quote(filename.encode('utf-8'))
 	
-	# response['Content-Disposition'] = 'attachment; ' + filename_header
-	# return response
-	
+def delete_file(request,page_name='',file_num=''):
+	if page_name == '' or file_num == '':
+		c={'alert':'잘못된 요청입니다.','location':'/sle/wiki/'+page_name}
+		return render(request,"alert.html",c)
 
-# Create your views here.
+	file_data_list = FilePath.objects.filter(page_name=page_name)
+	if len(file_data_list) == 0:
+		c={'alert':'파일이 없습니다.','location':'/sle/wiki/'+page_name}
+		return render(request,"alert.html",c)
+
+	file_data = file_data_list[int(file_num)-1]
+	full_file_name = file_data.upload_path +'/'+ str(file_data.dummy_name)
+	file_name = file_data.file_name
+	file_data.delete()
+	os.remove(full_file_name)
+
+	c={'alert': '올리신 '+file_name+' 파일이 삭제 되었습니다.','location':'/sle/wiki/'+page_name}
+	return render(request,"alert.html",c)
+	

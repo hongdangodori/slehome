@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.db import models
 
 # Create your models here.
@@ -17,5 +16,5 @@ class FilePath(models.Model):
 	page_name =models.CharField(max_length=20, null=True)
 	upload_path = models.CharField(max_length=30,default='/home/sle/upload/')
 	file_name =models.TextField(null=True)
-	# dummy_name = models.CharField(max_length=20,null=True)
+	dummy_name = models.CharField(max_length=20,null=True)
 

@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^sle/wiki/(?P<page_name>[^/]+)/history/$', 'wiki.views.history_page'),
     url(r'^sle/wiki/(?P<page_name>[^/]+)/upload/$', 'wiki.views.upload_page'),
     url(r'^sle/wiki/(?P<page_name>[^/]+)/download/(?P<file_num>[^/]+)/$', 'wiki.views.download_page'),
+    url(r'^sle/wiki/(?P<page_name>[^/]+)/delete/(?P<file_num>[^/]+)/$', 'wiki.views.delete_file'),
     url(r'^sle/wiki/(?P<page_name>[^/]+)/(?P<page_num>[^/]+)/$', 'wiki.views.view_page'),
 
     # url(r'^sle/wiki/alert/$', 'wiki.views.alert_page'),
