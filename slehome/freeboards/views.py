@@ -10,10 +10,10 @@ from django.http import HttpResponseRedirect
 from freeboards.models import FreeBoard
 from freeboards.pagingHelper import pagingHelper
 
-rowsPerPage = 2
+rowsPerPage = 4
 
 def home(request):
-	boardList = FreeBoard.objects.order_by('-id')[0:2]
+	boardList = FreeBoard.objects.order_by('-id')[0:4]
 	currentPage = 1
 
 	totalCnt = FreeBoard.objects.all().count()
@@ -22,27 +22,27 @@ def home(request):
 	totalPageList = pagingHelperIns.getTotalPageList(totalCnt, rowsPerPage)	
 	print('totalPageList')
 
-	return render_to_response("listSpecificPage.html", {'boardList': boardList,	
+	return render(request, "listSpecificPage.html", {'boardList': boardList,	
 		'totalCnt': totalCnt, 'currentPage': currentPage, 'totalPageList': totalPageList})
 
 
 def showWriteForm(request):
-	return render_to_response('writeBoard.html')
+	return render(request, 'writeBoard.html')
 
 
 @csrf_exempt
 def doWriteBoard(request):
-	br = FreeBoard(subject = request.POST['subject'],
-		name = request.POST['name'],
-		mail = request.POST['email'],
-		memo = request.POST['memo'],
-		created_date = timezone.now(),
+	br = FreeBoard(user = request.POST['name'],
+		category = request.POST['category'],
+		title = request.POST['title'],
+		contents = request.POST['contents'],
+		pub_date = timezone.now(),
 		hits = 0
 		)
 	br.save()
 
 	# url = '/listSpecificPageWork?currentPage=1'
-	return HttpResponseRedirect("/freeboards/")
+	return HttpResponseRedirect("/sle/freeboards/")
 
 
 def listSpecificPageWork(request):
@@ -63,18 +63,18 @@ def listSpecificPageWork(request):
 	# boardList = FreeBoard.objects.raw('SELECT Z.*	FROM(SELECT X.*, ceil(rownum / %s) as page FROM (SELECT ID, SUBJECT, NAME, CREATED_DATE, MAIL, MEMO, HITS FROM FREEBOARDS ORDER BY ID DESC) X) Z WHERE page = %s', [rowsPerPage, currentPage])
 
 
-	return render_to_response('listSpecificPage.html', {'boardList': boardList, 'totalCnt': totalCnt,
+	return render(request, 'listSpecificPage.html', {'boardList': boardList, 'totalCnt': totalCnt,
 		'currentPage': currentPage, 'totalPageList': totalPageList})
 
 
 def viewWork(request):
-	pk = request.GET['memo_id']
+	pk = request.GET['writing_id']
 	boardData = FreeBoard.objects.get(id=pk)
 
 	# hit++
 	FreeBoard.objects.filter(id=pk).update(hits = boardData.hits + 1)
 
-	return render_to_response('viewMemo.html', {'memo_id': request.GET['memo_id'],
+	return render(request, 'viewMemo.html', {'writing_id': request.GET['writing_id'],
 		'currentPage': request.GET['currentPage'],
 		'searchStr': request.GET['searchStr'],
 		'boardData': boardData
