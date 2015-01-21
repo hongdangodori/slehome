@@ -10,20 +10,24 @@ from django.http import HttpResponseRedirect
 from freeboards.models import FreeBoard
 from freeboards.pagingHelper import pagingHelper
 
-rowsPerPage = 4
+rowsPerPage = 2
 
 def home(request):
-	boardList = FreeBoard.objects.order_by('-id')[0:4]
+	boardList = FreeBoard.objects.order_by('-id')[:rowsPerPage]
 	currentPage = 1
 
 	totalCnt = FreeBoard.objects.all().count()
 
 	pagingHelperIns = pagingHelper()
 	totalPageList = pagingHelperIns.getTotalPageList(totalCnt, rowsPerPage)	
-	print('totalPageList')
 
-	return render(request, "listSpecificPage.html", {'boardList': boardList,	
-		'totalCnt': totalCnt, 'currentPage': currentPage, 'totalPageList': totalPageList})
+	context = {'boardList': boardList,
+		'totalCnt': totalCnt,
+		'currentPage': currentPage,
+		'totalPageList': totalPageList
+		}
+
+	return render(request, "listSpecificPage.html", context)
 
 
 def showWriteForm(request):
@@ -41,30 +45,24 @@ def doWriteBoard(request):
 		)
 	br.save()
 
-	# url = '/listSpecificPageWork?currentPage=1'
-	return HttpResponseRedirect("/sle/freeboards/")
+	return HttpResponseRedirect("/sle/freeboards/listSpecificPageWork?currentPage=1")
 
 
 def listSpecificPageWork(request):
 	currentPage = request.GET['currentPage']
 	totalCnt = FreeBoard.objects.all().count()
-
-	print('currentPage =', currentPage)
+	boardList = FreeBoard.objects.order_by('-id')[int(rowsPerPage)*(int(currentPage)-1) : int(rowsPerPage)*int(currentPage)]
 
 	pagingHelperIns = pagingHelper()
 	totalPageList = pagingHelperIns.getTotalPageList(totalCnt, rowsPerPage)
 
-	print('totalPageList', totalPageList)
+	context = {'boardList': boardList,
+		'totalCnt': totalCnt,
+		'currentPage': int(currentPage),
+		'totalPageList': totalPageList
+		}
 
-	# pages of currentPage
-	f = rowsPerPage * currentPage
-	b = f - rowsPerPage + 1
-	boardList = FreeBoard.objects.raw('SELECT * FROM freeboards_FreeBoard WHERE id between %s and %s', [b, f])
-	# boardList = FreeBoard.objects.raw('SELECT Z.*	FROM(SELECT X.*, ceil(rownum / %s) as page FROM (SELECT ID, SUBJECT, NAME, CREATED_DATE, MAIL, MEMO, HITS FROM FREEBOARDS ORDER BY ID DESC) X) Z WHERE page = %s', [rowsPerPage, currentPage])
-
-
-	return render(request, 'listSpecificPage.html', {'boardList': boardList, 'totalCnt': totalCnt,
-		'currentPage': currentPage, 'totalPageList': totalPageList})
+	return render(request, 'listSpecificPage.html', context)
 
 
 def viewWork(request):
@@ -74,9 +72,88 @@ def viewWork(request):
 	# hit++
 	FreeBoard.objects.filter(id=pk).update(hits = boardData.hits + 1)
 
-	return render(request, 'viewMemo.html', {'writing_id': request.GET['writing_id'],
+	context = {
+		'writing_id' : request.GET['writing_id'],
 		'currentPage': request.GET['currentPage'],
-		'searchStr': request.GET['searchStr'],
-		'boardData': boardData
-		})
+		'searchStr' : request.GET['searchStr'],
+		'boardData' : boardData
+		}
+
+	return render(request, 'viewMemo.html', context)
 	
+
+def listSearchSpecificPageWork(request):
+	searchStr = request.GET['searchStr']
+	pageForView = request.GET['pageForView']
+
+	boardList = FreeBoard.objects.filter(title__contains=searchStr)
+	totalCnt  = FreeBoard.objects.filter(title__contains=searchStr).count()
+
+	pagingHelperIns = pagingHelper()
+	totalPageList = pagingHelperIns.getTotalPageList(totalCnt, rowsPerPage)
+
+	context = {
+		'boardList': boardList,
+		'totalCnt': totalCnt,
+		'pageForView': int(pageForView),
+		'searchStr': searchStr,
+		'totalPageList': totalPageList,
+	}
+
+	return render(request, 'listSearchedSpecificPage.html', context)
+
+
+def listSpecificPageUpdate(request):
+	writing_id = request.GET['writing_id']
+	currentPage = request.GET['currentPage']
+	searchStr = request.GET['searchStr']
+	boardData = FreeBoard.objects.get(id=writing_id)
+
+	context = {
+		'writing_id': writing_id,
+		'currentPage': currentPage,
+		'searchStr': searchStr,
+		'boardData': boardData,
+	}
+
+	return render(request, 'viewForUpdate.html', context)
+
+
+@csrf_exempt
+def updateBoard(request):
+	writing_id = request.POST.get('writing_id', False)
+	currentPage = request.POST.get('currentPage', False)
+	searchStr = request.POST.get('searchStr', False)
+
+	# update Database
+	FreeBoard.objects.filter(id=writing_id).update(
+		category = request.POST.get('category', False),
+		title = request.POST.get('title', False),
+		contents = request.POST.get('contents', False),
+		)
+
+	url = '/sle/freeboards/listSpecificPageWork?currentPage' + currentPage
+	return HttpResponseRedirect(url)
+
+
+def deleteSpecificRow(request):
+	pk = request.GET['writing_id']
+	currentPage = request.GET['currentPage']
+
+	p = FreeBoard.objects.get(id=pk)
+	p.delete()
+
+	# if last memo deleted, page--
+	totalCnt = FreeBoard.objects.all().count()
+	pagingHelperIns = pagingHelper()
+
+	totalPageList = pagingHelperIns.getTotalPageList( totalCnt, rowsPerPage)
+	if( int(currentPage) in totalPageList):
+		currentPage=currentPage
+	else:
+		currentPage= int(currentPage)-1
+
+	url = '/sle/freeboards/listSpecificPageWork?currentPage=' + str(currentPage)
+	return HttpResponseRedirect(url)
+
+

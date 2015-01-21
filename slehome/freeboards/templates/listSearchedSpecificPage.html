@@ -1,0 +1,70 @@
+<html>
+<head>
+  <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
+</head>
+
+  <table class="table" cellspacing=1 width=700 border=0>
+      <tr>
+          <td>Total writings: {{ totalCnt }}</td>
+          <td><p align=right> Page:{{ pageForView }}
+          </td>
+      </tr>
+  </table>
+
+  <table class="table" cellspacing=1 width=700 border=1>
+      <tr>
+          <td width=50><p align=center>No.</p></td>
+          <td width=80><p align=center>Category</p></td>
+          <td width=320><p align=center>Title</p></td>
+          <td width=80><p align=center>Writer</p></td>
+          <td width=80><p align=center>Date</p></td>
+          <td width=80><p align=center>Hits</p></td>
+      </tr>
+
+      {% if boardList %}
+          <ul>
+              {% for boardRow in boardList %}
+              <tr>
+              <td width=50><p align=center>{{ boardRow.id }}</p></td>
+              <td width=80><p align=center>{{ boardRow.category }}</p></td>
+              <td width=320>
+                  <p align=center>
+                      <a href="/sle/freeboards/viewWork?memo_id={{ boardRow.id }}&currentPage={{ pageForView }}&searchStr={{searchStr}}" title="{{ boardRow.contents}}">{{ boardRow.title }}
+                  </p>
+              </td>
+              <td width=80><p align=center>{{ boardRow.pub_date }}</p></td>
+              <td width=80><p align=center>{{ boardRow.hits }}</p></td>
+              </tr>
+              {% endfor %}
+          </ul>
+      {% else %}
+          <p>.</p>
+      {% endif %}
+  </table>
+
+  <table class="table" cellspacing=1 width=700 border=1 >
+      <tr> <td>
+          {% for page in totalPageList %}
+              <a href="/sle/freeboards/listSearchedSpecificPageWork?searchStr={{searchStr}}&pageForView={{page}}" >
+              [
+              {% ifequal page pageForView %}
+                  <b>
+              {% endifequal %}
+              {{page}}
+
+              {% ifequal page pageForView  %}
+                  </b>
+              {% endifequal %}
+              ]
+          {% endfor %}
+          </td> </tr>
+  </table>
+
+  <table class="table" width=700>
+      <tr>
+          <td><input type=button value="Back to the original list"  OnClick="window.location='/'">
+      </tr>
+  </table>
+
+
+</html>

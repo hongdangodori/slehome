@@ -50,16 +50,16 @@
     <tr> <td>
         {% for page in totalPageList %}
             <a href="/sle/freeboards/listSpecificPageWork?currentPage={{page}}" >
-            [
-            {% ifequal page currentPage %}
-                <b>
-            {% endifequal %}
-            {{page}}
-
-            {% ifequal page currentPage  %}
-                </b>
-            {% endifequal %}
-            ]
+                [
+                    {% if page == currentPage  %}
+                        <b>
+                    {% endif %}
+                        {{ page }}
+                    {% if page == currentPage %}
+                        </b>
+                    {% endif %}
+                    
+                ]                
         {% endfor %}
         </td> </tr>
 </table>
@@ -67,9 +67,12 @@
 <table class="table" width=700>
     <tr>
         <td><input type=button value="Write"  OnClick="window.location='/sle/freeboards/showWriteForm'">    </td>
-        <td><form name=searchf method=post action="/searchWithSubject/">
-            <p align=right><input type=text name=searchStr size=50  maxlength=50>
-            <input type=submit value="Search"></p>
+        
+        <td><form name=searchf method=post action="/sle/freeboards/searchWithSubject/">
+            <p align=right>
+            <input type=text name=searchStr size=50  maxlength=50>
+            <input type=submit value="Search">
+            </p>
         </td>
     </tr>
 </table>
