@@ -25,16 +25,17 @@
           <ul>
               {% for boardRow in boardList %}
               <tr>
-              <td width=50><p align=center>{{ boardRow.id }}</p></td>
-              <td width=80><p align=center>{{ boardRow.category }}</p></td>
-              <td width=320>
-                  <p align=center>
-                      <a href="/sle/freeboards/viewWork?memo_id={{ boardRow.id }}&currentPage={{ pageForView }}&searchStr={{searchStr}}" title="{{ boardRow.contents}}">{{ boardRow.title }}
-                  </p>
-              </td>
-              <td width=80><p align=center>{{ boardRow.pub_date }}</p></td>
-              <td width=80><p align=center>{{ boardRow.hits }}</p></td>
-              </tr>
+                <td width=50><p align=center>{{ boardRow.id }}</p></td>
+                <td width=80><p align=center>{{ boardRow.category }}</p></td>
+                <td width=320>
+                    <p align=center>
+                        <a href="/sle/freeboards/viewWork?writing_id={{ boardRow.id }}&currentPage={{ pageForView }}&searchStr={{searchStr}}" title="{{ boardRow.contents}}">{{ boardRow.title }}
+                    </p>
+                </td>
+                <td width=80><p align=center>{{ boardRow.user }}</p></td>
+                <td width=80><p align=center>{{ boardRow.pub_date }}</p></td>
+                <td width=80><p align=center>{{ boardRow.hits }}</p></td>
+                </tr>
               {% endfor %}
           </ul>
       {% else %}
@@ -45,7 +46,7 @@
   <table class="table" cellspacing=1 width=700 border=1 >
       <tr> <td>
           {% for page in totalPageList %}
-              <a href="/sle/freeboards/listSearchedSpecificPageWork?searchStr={{searchStr}}&pageForView={{page}}" >
+              <a href="/sle/freeboards/listSearchedSpecificPage?searchStr={{searchStr}}&pageForView={{page}}" >
               [
               {% ifequal page pageForView %}
                   <b>
@@ -62,7 +63,7 @@
 
   <table class="table" width=700>
       <tr>
-          <td><input type=button value="Back to the original list"  OnClick="window.location='/'">
+          <td><input type=button value="Back to the original list"  OnClick="window.location='/sle/freeboards/'">
       </tr>
   </table>
 

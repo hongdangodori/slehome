@@ -71,6 +71,8 @@ def viewWork(request):
 
 	# hit++
 	FreeBoard.objects.filter(id=pk).update(hits = boardData.hits + 1)
+	boardData = FreeBoard.objects.get(id=pk)
+
 
 	context = {
 		'writing_id' : request.GET['writing_id'],
@@ -81,27 +83,6 @@ def viewWork(request):
 
 	return render(request, 'viewMemo.html', context)
 	
-
-def listSearchSpecificPageWork(request):
-	searchStr = request.GET['searchStr']
-	pageForView = request.GET['pageForView']
-
-	boardList = FreeBoard.objects.filter(title__contains=searchStr)
-	totalCnt  = FreeBoard.objects.filter(title__contains=searchStr).count()
-
-	pagingHelperIns = pagingHelper()
-	totalPageList = pagingHelperIns.getTotalPageList(totalCnt, rowsPerPage)
-
-	context = {
-		'boardList': boardList,
-		'totalCnt': totalCnt,
-		'pageForView': int(pageForView),
-		'searchStr': searchStr,
-		'totalPageList': totalPageList,
-	}
-
-	return render(request, 'listSearchedSpecificPage.html', context)
-
 
 def listSpecificPageUpdate(request):
 	writing_id = request.GET['writing_id']
@@ -121,18 +102,18 @@ def listSpecificPageUpdate(request):
 
 @csrf_exempt
 def updateBoard(request):
-	writing_id = request.POST.get('writing_id', False)
-	currentPage = request.POST.get('currentPage', False)
-	searchStr = request.POST.get('searchStr', False)
+	writing_id = request.POST['writing_id']
+	currentPage = request.POST['currentPage']
+	searchStr = request.POST['searchStr']
 
 	# update Database
 	FreeBoard.objects.filter(id=writing_id).update(
-		category = request.POST.get('category', False),
-		title = request.POST.get('title', False),
-		contents = request.POST.get('contents', False),
+		category = request.POST['category'],
+		title = request.POST['title'],
+		contents = request.POST['contents'],
 		)
 
-	url = '/sle/freeboards/listSpecificPageWork?currentPage' + currentPage
+	url = '/sle/freeboards/listSpecificPageWork?currentPage=' + currentPage
 	return HttpResponseRedirect(url)
 
 
@@ -154,6 +135,35 @@ def deleteSpecificRow(request):
 		currentPage= int(currentPage)-1
 
 	url = '/sle/freeboards/listSpecificPageWork?currentPage=' + str(currentPage)
+	return HttpResponseRedirect(url)
+
+
+def listSearchedSpecificPage(request):
+	searchStr = request.GET['searchStr']
+	pageForView = request.GET['pageForView']
+
+	boardList = FreeBoard.objects.filter(title__contains=searchStr)
+	totalCnt  = FreeBoard.objects.filter(title__contains=searchStr).count()
+
+	pagingHelperIns = pagingHelper()
+	totalPageList = pagingHelperIns.getTotalPageList(totalCnt, rowsPerPage)
+
+	context = {
+		'boardList': boardList,
+		'totalCnt': totalCnt,
+		'pageForView': int(pageForView),
+		'searchStr': searchStr,
+		'totalPageList': totalPageList,
+	}
+
+	return render(request, 'listSearchedSpecificPage.html', context)
+
+
+@csrf_exempt
+def searchWithSubject(request):
+	searchStr = request.POST['searchStr']
+
+	url = '/sle/freeboards/listSearchedSpecificPage?searchStr='+searchStr+'&pageForView=1'
 	return HttpResponseRedirect(url)
 
 

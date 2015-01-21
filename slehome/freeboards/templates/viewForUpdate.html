@@ -37,7 +37,7 @@
 	<table cellspacing = 0 cellpadding = 5 border = 1 width=500>
 	<form name=modifyform method=post action="/sle/freeboards/updateBoard/">
 	    <input type=hidden name=writing_id  value="{{writing_id}}">
-	    <input type=hidden name=currentPage  value="{{current}} ">
+	    <input type=hidden name=currentPage  value="{{currentPage}}">
 	    <input type=hidden name=searchStr  value="{{searchStr}} ">
 
 	    <tr><td><b>Name</b></td><td>{{ boardData.user }}<input type=hidden name=user size=50  maxlength=30 value="{{ boardData.user }}"></td><tr>
