@@ -62,10 +62,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'slehome',
-	'USER': 'root',
-	'PASSWORD':'tmfWk',
-	'HOST':'',
-	'PORT':'',
+    	'USER': 'root',
+    	'PASSWORD':'tmfWk',
+    	'HOST':'',
+    	'PORT':'',
     }
 }
 
