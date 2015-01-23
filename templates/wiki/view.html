@@ -15,7 +15,7 @@
 			{{pub_date}}
 
 			{% if is_history == False %}
-				<a href="/sle/wiki/{{page_name}}/edit/">Edit this page?</a>
+				<a href="/sle/wiki/{{page_name}}/edit/0/">Edit this page?</a>
 				<br/>
 				<a href="/sle/wiki/{{page_name}}/history/">#history</a>
 			{% endif %}
@@ -42,11 +42,11 @@
 		{% endif %}
 		</div>
 		<hr />	
-		<div>
+		<p>
 			{% autoescape off %}
 			{{content}}
 			{% endautoescape %}
-		</div>
+		</p>
 		<hr />
 		
 		<hr />

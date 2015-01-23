@@ -10,6 +10,8 @@ from django.core.servers.basehttp import FileWrapper
 import codecs
 import random, string
 
+from markdown import markdown, ContentEdit
+
 def view_page(request, page_name='',page_num=''):
 	is_history = False
 	if page_name == '':
@@ -29,7 +31,9 @@ def view_page(request, page_name='',page_num=''):
 	else:
 		return render(request,"wiki/create.html",{"page_name":page_name})
 
-	content = page.content
+	md = markdown(page_name, page.content)
+	content = md['content']
+	context = md['context']
 	pub_date=page.pub_date
 
 	file_list = []
@@ -40,31 +44,44 @@ def view_page(request, page_name='',page_num=''):
 			count += 1
 			file_list.append({'file_name':f_p.file_name,'upload_path':f_p.upload_path,'count':count})
 
-	c={"page_name":page_name,"content":content,"pub_date":pub_date,"is_history":is_history,"file_list":file_list}	 
+	c={"page_name":page_name,"context":context,"content":content,"pub_date":pub_date,"is_history":is_history,"file_list":file_list}	 
 	return render(request,"wiki/view.html",c)
 
-def edit_page(request,page_name):
+def edit_page(request,page_name,section='0'):
+	section = int(section)
 	page = Page.objects.filter(page_name=page_name)
 	if len(page) > 0 :
 		page = page[len(page)-1]
 		content = page.content
+		if section > 0 :
+			md = markdown(page_name, content)['edit']
+			content = ContentEdit(content, md[section]['line'], md[section]['next_line'])
 	else: 
 		content = ""
-	c={"page_name":page_name,"content":content}
+	c={"page_name":page_name,"content":content,"section":str(section)}
 	c.update(csrf(request))
 	return render(request,"wiki/edit.html",c)
 
-def save_page(request,page_name):
+def save_page(request,page_name,section='0'):
 	content=request.POST["content"]
+	section = int(section)
 	page=Page.objects.filter(page_name=page_name)
+	cur_content = ''
 
 	if len(page) > 0:
 		page=page[len(page)-1]
-		if page.content != content :
+		if section == 0 :
+			cur_content = page.content
+		elif section > 0 :
+			md = markdown(page_name, page.content)['edit']
+			cur_content = ContentEdit(page.content, md[section]['line'], md[section]['next_line'])
+		if cur_content != content :
 			page.new_version=False
 			page.save()
+		else :
+			return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
 			
-	page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now(),new_version=True)
+	page = Page(page_name=page_name, content=page.content.replace(cur_content,content,1), pub_date=datetime.datetime.now(),new_version=True)
 	page.save()	
 	return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
 

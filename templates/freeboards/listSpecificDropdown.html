@@ -1,0 +1,76 @@
+<html>
+<head>
+    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
+
+    <script>
+    // window.onload = function(){
+    //     var t = document.getElementsByClassName("btn btn-default");
+    //     for(var i=0; i<t.length; i++){
+    //         t[i].addEventListener('click', function(){
+    //             alert(i);
+    //         });
+    //     }
+    // }
+    // </script>
+
+</head>
+
+<body>
+    <table class="table" cellspacing=1 width=700 border=0>
+        <tr>
+            <td>Total writings: {{ totalCnt }}</td>
+            <td><p align=right> Page:{{ currentPage }}</td>
+        </tr>
+    </table>
+
+    <div class="dropdown-writings">
+        {% if boardList %}
+            {% for boardRow in boardList %}
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        {{ boardRow.title }}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ boardRow.contents }}</a></li>
+                </ul>
+            {% endfor %}
+        {% else %}
+            <p></p>
+        {% endif %}
+    </div>
+
+    
+
+
+    <table class="table" cellspacing=1 width=700 border=1 >
+        <tr> <td>
+            {% for page in totalPageList %}
+                <a href="/sle/freeboards/listSpecificPageWork?currentPage={{page}}" >
+                    [
+                        {% if page == currentPage  %}
+                            <b>
+                        {% endif %}
+                            {{ page }}
+                        {% if page == currentPage %}
+                            </b>
+                        {% endif %}
+                        
+                    ]                
+            {% endfor %}
+            </td> </tr>
+    </table>
+
+    <table class="table" width=700>
+        <tr>
+            <td><input type=button value="Write"  OnClick="window.location='/sle/freeboards/showWriteForm'">    </td>
+            
+            <td><form name=searchf method=post action="/sle/freeboards/searchWithSubject/">
+                <p align=right>
+                <input type=text name=searchStr size=50  maxlength=50>
+                <input type=submit value="Search">
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
