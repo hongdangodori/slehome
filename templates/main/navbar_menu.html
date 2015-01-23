@@ -3,9 +3,9 @@
   	{% if menu.display == True %}
   		{% with "/main/"|add:menu.menu.lower as menu_path %}
 	  		{% if current_path == menu_path %}
-	  			<li class="active"><a href="{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
+	  			<li class="active"><a href="{{ base_path }}{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
 	  		{% else %}
-	  			<li><a href="{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
+	  			<li><a href="{{ base_path }}{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
 	  		{% endif %}
 	  	{% endwith %}
 		{% endif %}
@@ -16,9 +16,9 @@
 		{% if menu.display == True %}
   		{% with "/main/"|add:menu.menu.lower as menu_path %}
 	  		{% if current_path == menu_path %}
-	  			<li class="active"><a href="{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
+	  			<li class="active"><a href="{{ base_path }}{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
 	  		{% else %}
-	  			<li><a href="{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
+	  			<li><a href="{{ base_path }}{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
 	  		{% endif %}
 	  	{% endwith %}
 		{% endif %}
