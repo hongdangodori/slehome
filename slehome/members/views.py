@@ -15,7 +15,6 @@ def members_index(request):
 	if request.method == "POST":
 		if 'logout' in request.POST:
 			navbar.user_logout()
-			navbar.user_setting()
 
 	###unique part###
 	context_dict = {}
