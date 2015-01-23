@@ -13,6 +13,14 @@
 
 {% else %}
   {% for menu in menu_list_for_nonmembers %}
-		<li {% comment %}class="active"{% endcomment %}><a href="#">{{ menu }} <span class="sr-only">(current)</span></a></li>
+		{% if menu.display == True %}
+  		{% with "/main/"|add:menu.menu.lower as menu_path %}
+	  		{% if current_path == menu_path %}
+	  			<li class="active"><a href="{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
+	  		{% else %}
+	  			<li><a href="{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
+	  		{% endif %}
+	  	{% endwith %}
+		{% endif %}
 	{% endfor %}
 {% endif %}
