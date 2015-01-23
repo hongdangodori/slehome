@@ -27,7 +27,7 @@ def home(request):
 		'totalPageList': totalPageList
 		}
 
-	return render(request, "freeboards/listSpecificPage.html", context)
+	return render(request, "freeboards/listSpecificDropdown.html", context)
 
 
 def showWriteForm(request):

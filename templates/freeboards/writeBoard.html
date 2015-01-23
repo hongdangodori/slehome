@@ -1,9 +1,6 @@
-<html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-  <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
-	<title>Write on the Board</title>
-</head>
+{% extends "freeboards/freeboards_base.html" %}
+
+{% block content %}
 
 <table class="table" width=700 border=1 cellspacing=0 cellpadding=5>
   <form name="writeform" method=post action="/sle/freeboards/doWriteBoard/">
@@ -44,3 +41,6 @@
           form.submit();
       }
 </script>
+
+
+{% endblock %}

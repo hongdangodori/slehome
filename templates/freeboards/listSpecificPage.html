@@ -1,12 +1,6 @@
-{% comment %}
-  totalCnt: <strong>{{ totalCnt }}</strong> currentPage: <strong>{{ currentPage }}</strong> boardList: <strong>{{ boardList|length }}</strong>
-{% endcomment %}
-<html>
-<head>
-    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
-
-</head>
-
+{% extends "freeboards/freeboards_base.html" %}
+{% block title %} Freeboards {% endblock %}
+{% block content %}
 <table class="table" cellspacing=1 width=700 border=0>
     <tr>
         <td>Total writings: {{ totalCnt }}</td>
@@ -76,4 +70,5 @@
         </td>
     </tr>
 </table>
-</html>
+
+{% endblock %}

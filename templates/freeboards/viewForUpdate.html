@@ -1,10 +1,6 @@
-<html>
+{% extends "freeboards/freeboards_base.html" %}
 
-	<head>
-		<title>Edit Writing</title>
-		<link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
-	
-
+{% block content %}
 	<script language="javascript">
 	function writeCheck(){
 		var form = document.modifyform;
@@ -32,7 +28,7 @@
 	            location.href = '/listSearchedSpecificPageWork?pageForView={{currentPage}}&searchStr={{searchStr}}';
 	 }
 	</script>
-	</head>
+
 
 	<table cellspacing = 0 cellpadding = 5 border = 1 width=500>
 	<form name=modifyform method=post action="/sle/freeboards/updateBoard/">
@@ -53,4 +49,4 @@
 	        <input type=button value="List" OnClick="javascript:boardlist()">
 	    </td></tr>
 	</table>
-</html>
+{% endblock %}

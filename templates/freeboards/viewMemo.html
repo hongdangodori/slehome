@@ -1,5 +1,6 @@
-<html>
-  <head>
+{% extends "freeboards/freeboards_base.html" %}
+
+{% block content %}
     <title>{{ boardData.title }}</title>
     <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
   
@@ -22,10 +23,10 @@
       }
   </script>
   
-  </head>
 
 
-  <body>
+
+
     <h3>{{ boardData.title }}</h3>
 
     <table class="table" cellspacing = 0 cellpadding = 5 border = 1 width=500>
@@ -33,7 +34,6 @@
         <tr><td><b>Category </b></td><td> {{ boardData.category }} </td></tr>
         <tr><td><b>Name </b></td><td> {{ boardData.user }} </td></tr>
         <tr><td><b>Title </b></td><td> {{ boardData.title }} </td></tr>
-        <tr><td><b>Contents </b></td><td width=350> {{ boardData.contents }} </td></tr>
     </table>
 
     <table class="table" cellspacing = 0 cellpadding = 0 border = 0 width=500>
@@ -43,5 +43,4 @@
             <input type=button value="Delete" OnClick="javascript:boarddelete()">
         </td></tr>
     </table>
-  </body>
-  </html>
+ {% endblock %}

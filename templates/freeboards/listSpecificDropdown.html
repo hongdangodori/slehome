@@ -1,21 +1,16 @@
-<html>
-<head>
-    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
+{% extends "freeboards/freeboards_base.html" %}
 
-    <script>
-    // window.onload = function(){
-    //     var t = document.getElementsByClassName("btn btn-default");
-    //     for(var i=0; i<t.length; i++){
-    //         t[i].addEventListener('click', function(){
-    //             alert(i);
-    //         });
-    //     }
-    // }
-    // </script>
+{% block header %} 
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+{% endblock %}
 
-</head>
+{% block title %} Dropdown {% endblock %}
 
-<body>
+{% block content %}
+
+
     <table class="table" cellspacing=1 width=700 border=0>
         <tr>
             <td>Total writings: {{ totalCnt }}</td>
@@ -23,25 +18,24 @@
         </tr>
     </table>
 
-    <div class="dropdown-writings">
-        {% if boardList %}
-            {% for boardRow in boardList %}
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                        {{ boardRow.title }}
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ boardRow.contents }}</a></li>
-                </ul>
-            {% endfor %}
-        {% else %}
-            <p></p>
-        {% endif %}
+
+    <div class="dropdown">
+    {% if boardList %}
+        {% for boardRow in boardList %}
+        <div class="col-md-8">
+            <button class="btn btn-default dropdown-toggle" type="button" id="menu{{ boardRow.id }}" data-toggle="dropdown"> {{ boardRow.title }}
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="menu{{ boardRow.id }}">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ boardRow.contents }}</a></li>
+            </ul>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p></p>
+    {% endif %}
     </div>
-
     
-
-
+    
     <table class="table" cellspacing=1 width=700 border=1 >
         <tr> <td>
             {% for page in totalPageList %}
@@ -72,5 +66,4 @@
             </td>
         </tr>
     </table>
-</body>
-</html>
+{% endblock %}
