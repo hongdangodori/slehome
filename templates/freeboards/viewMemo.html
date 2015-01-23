@@ -1,8 +1,7 @@
-{% load staticfiles %}
 <html>
   <head>
     <title>{{ boardData.title }}</title>
-    <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
   
   <script language="javascript">
       function boardlist(){

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+TEMPLATE_DIRS = (
+    "/home/sle/templates",
+)
 
 
 # Quick-start development settings - unsuitable for production
@@ -36,8 +39,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main',
     'wiki',
-    'freeboards'
+    'freeboards',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -69,10 +73,6 @@ DATABASES = {
     }
 }
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
-)
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -92,3 +92,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/sle/static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = '/home/sle/media/'

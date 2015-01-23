@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -8,18 +10,18 @@
         <meta name="author" content="">
 
         <!-- Bootstrap core CSS -->
-        <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
+        <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
 
         <!-- Custom styles for this template -->
-        <link href="{{ STATIC_URL }}static/css/styles.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}static/css/navbar.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}static/css/contents.css" rel="stylesheet">  
+        <link href="{% static "bootstrap/css/styles.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/navbar.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/contents.css" %}" rel="stylesheet">
         <title>wiki page | {% block title %}{% endblock %}</title>
-        <script src="{{ STATIC_URL }}static/js/jquery.js"></script>
-        <script src="{{ STATIC_URL }}static/js/bootstrap.min.js"></script>
+        <script src="{% static "bootstrap/js/jquery.js" %}"></script>
+        <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
     </head>
     <body>
-        {% include "wiki_navbar.html" %}
+        {% include "wiki/wiki_navbar.html" %}
         <br>
         <div class="container">
             {% block content %}{% endblock %}    

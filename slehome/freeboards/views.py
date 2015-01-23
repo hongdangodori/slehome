@@ -27,11 +27,11 @@ def home(request):
 		'totalPageList': totalPageList
 		}
 
-	return render(request, "listSpecificPage.html", context)
+	return render(request, "freeboards/listSpecificPage.html", context)
 
 
 def showWriteForm(request):
-	return render(request, 'writeBoard.html')
+	return render(request, 'freeboards/writeBoard.html')
 
 
 @csrf_exempt
@@ -62,7 +62,7 @@ def listSpecificPageWork(request):
 		'totalPageList': totalPageList
 		}
 
-	return render(request, 'listSpecificPage.html', context)
+	return render(request, 'freeboards/listSpecificPage.html', context)
 
 
 def viewWork(request):
@@ -81,7 +81,7 @@ def viewWork(request):
 		'boardData' : boardData
 		}
 
-	return render(request, 'viewMemo.html', context)
+	return render(request, 'freeboards/viewMemo.html', context)
 	
 
 def listSpecificPageUpdate(request):
@@ -97,7 +97,7 @@ def listSpecificPageUpdate(request):
 		'boardData': boardData,
 	}
 
-	return render(request, 'viewForUpdate.html', context)
+	return render(request, 'freeboards/viewForUpdate.html', context)
 
 
 @csrf_exempt
@@ -156,7 +156,7 @@ def listSearchedSpecificPage(request):
 		'totalPageList': totalPageList,
 	}
 
-	return render(request, 'listSearchedSpecificPage.html', context)
+	return render(request, 'freeboards/listSearchedSpecificPage.html', context)
 
 
 @csrf_exempt

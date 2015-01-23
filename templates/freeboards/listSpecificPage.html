@@ -1,10 +1,9 @@
-{% load staticfiles %}
 {% comment %}
   totalCnt: <strong>{{ totalCnt }}</strong> currentPage: <strong>{{ currentPage }}</strong> boardList: <strong>{{ boardList|length }}</strong>
 {% endcomment %}
 <html>
 <head>
-    <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
 
 </head>
 

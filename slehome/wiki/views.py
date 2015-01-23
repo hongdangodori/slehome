@@ -23,11 +23,11 @@ def view_page(request, page_name='',page_num=''):
 				page = page[len(page)-int(page_num)]
 			except:
 				c={"alert":"페이지가 없습니다.",'location':'/sle/wiki/FrontPage'}
-				return render(request,"alert.html",c)
+				return render(request,"wiki/alert.html",c)
 		else:
 			page = page[len(page)-1]
 	else:
-		return render(request,"create.html",{"page_name":page_name})
+		return render(request,"wiki/create.html",{"page_name":page_name})
 
 	content = page.content
 	pub_date=page.pub_date
@@ -41,7 +41,7 @@ def view_page(request, page_name='',page_num=''):
 			file_list.append({'file_name':f_p.file_name,'upload_path':f_p.upload_path,'count':count})
 
 	c={"page_name":page_name,"content":content,"pub_date":pub_date,"is_history":is_history,"file_list":file_list}	 
-	return render(request,"view.html",c)
+	return render(request,"wiki/view.html",c)
 
 def edit_page(request,page_name):
 	page = Page.objects.filter(page_name=page_name)
@@ -52,7 +52,7 @@ def edit_page(request,page_name):
 		content = ""
 	c={"page_name":page_name,"content":content}
 	c.update(csrf(request))
-	return render(request,"edit.html",c)
+	return render(request,"wiki/edit.html",c)
 
 def save_page(request,page_name):
 	content=request.POST["content"]
@@ -106,13 +106,13 @@ def search_page(request):
 
 		c={"page":page_list , "search_key":search_key}	
 	
-		return render(request,"search.html",c)	
+		return render(request,"wiki/search.html",c)	
 
 
 def history_page(request,page_name=''):
 	if page_name == '':
 		c={'alert':'페이지 이름이 없습니다.'}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 	else:
 		page_list = Page.objects.filter(page_name=page_name)
@@ -123,7 +123,7 @@ def history_page(request,page_name=''):
 			p.append({"pub_date":page.pub_date,"count":count})
 
 		c={"page":p,"page_name":page_name}
-		return render(request,"history.html",c)
+		return render(request,"wiki/history.html",c)
 
 def upload_page(request,page_name=''):
 	c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -151,22 +151,22 @@ def upload_page(request,page_name=''):
 		f.save()
 
 		c={'alert': '올리신 '+file_name+' 파일이 업로드 되었습니다.','location':'/sle/wiki/'+page_name}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 	else:
 		c={'alert':'파일 업로드가 실패했습니다.','location':'/sle/wiki/'+page_name}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 
 def download_page(request,page_name='',file_num=''):
 	if page_name == '' or file_num == '':
 		c={'alert':'잘못된 다운로드 요청입니다.','location':'/sle/wiki/'+page_name}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 	file_data_list = FilePath.objects.filter(page_name=page_name)
 	if len(file_data_list) == 0:
 		c={'alert':'파일이 없습니다.','location':'/sle/wiki/'+page_name}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 	file_data = file_data_list[int(file_num)-1]
 	
@@ -185,12 +185,12 @@ def download_page(request,page_name='',file_num=''):
 def delete_file(request,page_name='',file_num=''):
 	if page_name == '' or file_num == '':
 		c={'alert':'잘못된 요청입니다.','location':'/sle/wiki/'+page_name}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 	file_data_list = FilePath.objects.filter(page_name=page_name)
 	if len(file_data_list) == 0:
 		c={'alert':'파일이 없습니다.','location':'/sle/wiki/'+page_name}
-		return render(request,"alert.html",c)
+		return render(request,"wiki/alert.html",c)
 
 	file_data = file_data_list[int(file_num)-1]
 	full_file_name = file_data.upload_path +'/'+ str(file_data.dummy_name)
@@ -199,5 +199,5 @@ def delete_file(request,page_name='',file_num=''):
 	os.remove(full_file_name)
 
 	c={'alert': '올리신 '+file_name+' 파일이 삭제 되었습니다.','location':'/sle/wiki/'+page_name}
-	return render(request,"alert.html",c)
+	return render(request,"wiki/alert.html",c)
 	
