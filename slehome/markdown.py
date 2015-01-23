@@ -17,8 +17,8 @@ def markdown(page_name, text) :
     token3 = {
         '[[' : [']]', '<a href="/sle/wiki/', '/">', '</a>'],
         '[[[' : [']]]', '<a href="', '" target=new>', '</a>'],
-        '[youtube]((' : ['))', '<iframe width="420" height="315" src="//www.youtube.com/embed/', '" frameborder="0" allowfullscreen>', '</iframe>'],
-        '[image]((' : ['))', '<img src="', '', '" class="img-rounded"></image>']
+        '[youtube]((' : ['))', '<br /><iframe width="420" height="315" src="//www.youtube.com/embed/', '" frameborder="0" allowfullscreen>', '</iframe><br />'],
+        '[image]((' : ['))', '<br /><img src="', '', '" class="img-rounded"></image><br />']
     }
     token3 = OrderedDict(sorted(token3.items(), key = lambda t : t[0], reverse = True))
 
