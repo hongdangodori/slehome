@@ -22,8 +22,8 @@
     <div class="dropdown">
     {% if boardList %}
         {% for boardRow in boardList %}
-        <div class="col-md-8">
-            <button class="btn btn-default dropdown-toggle" type="button" id="menu{{ boardRow.id }}" data-toggle="dropdown"> {{ boardRow.title }}
+        <div class="col-md-12">
+            <button class="btn btn-default dropdown-toggle" type="button" id="menu{{ boardRow.id }}" data-toggle="dropdown" aria-label="Left Align" style="width:100%;"> {{ boardRow.title }}
             <span class="caret"></span></button>
             <ul class="dropdown-menu" role="menu" aria-labelledby="menu{{ boardRow.id }}">
               <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ boardRow.contents }}</a></li>

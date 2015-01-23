@@ -10,9 +10,24 @@ from django.http import HttpResponseRedirect
 from freeboards.models import FreeBoard
 from freeboards.pagingHelper import pagingHelper
 
-rowsPerPage = 2
+from django.contrib.auth.decorators import login_required
+from main.shared import NavbarForMembers
 
+rowsPerPage = 10
+
+@login_required
 def home(request):
+
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
 	boardList = FreeBoard.objects.order_by('-id')[:rowsPerPage]
 	currentPage = 1
 
@@ -27,7 +42,11 @@ def home(request):
 		'totalPageList': totalPageList
 		}
 
-	return render(request, "freeboards/listSpecificDropdown.html", context)
+	######################
+	context.update(navbar.context_dict())
+	#######################
+
+	return render(request, "freeboards/listSpecificPage.html", context)
 
 
 def showWriteForm(request):
@@ -114,6 +133,8 @@ def updateBoard(request):
 		)
 
 	url = '/sle/freeboards/listSpecificPageWork?currentPage=' + currentPage
+
+
 	return HttpResponseRedirect(url)
 
 
