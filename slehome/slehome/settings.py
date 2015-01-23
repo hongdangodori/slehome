@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'account',
     'main',
+    'members',
     'wiki',
     'freeboards',
 )
@@ -97,3 +98,7 @@ STATIC_ROOT = '/home/sle/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/home/sle/media/'
+
+LOGIN_REDIRECT_URL = '/sle/'
+LOGIN_URL = '/sle/'
+LOGOUT_URL = '/sle/'

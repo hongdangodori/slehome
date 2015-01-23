@@ -19,6 +19,7 @@ class Navbar:
 						.order_by('display_ord')
 	menu_list_for_nonmembers = MenuListForNonmembers.objects.annotate(Count('menu'))\
 													.order_by('display_ord')
+	base_path = "http://54.169.79.59/sle/"
 
 	def __init__(self, request):
 		self.request = request
@@ -61,6 +62,42 @@ class Navbar:
 			'nickname': self.nickname,
 			'form': self.form,
 			'error_state': self.error_state,
-			'current_path': self.current_path
+			'current_path': self.current_path,
+			'base_path': self.base_path,
+		}
+		return context_dict
+
+class NavbarForMembers:
+	title = Title.objects.get(num=0)
+	menu_list = MenuList.objects.annotate(Count('menu'))\
+						.order_by('display_ord')
+	base_path = "http://54.169.79.59/sle/"
+
+	def __init__(self, request):
+		self.request = request
+
+	def get_current_path(self):
+		self.current_path = self.request.path
+
+	def user_setting(self):
+		self.user = self.request.user
+		if self.user is not None:
+			if not self.user.is_authenticated():
+				self.nickname = "guest"
+			else:
+				self.nickname = self.user.myuser.nickname
+
+	def user_logout(self):
+		logout(self.request)
+		return HttpResponseRedirect('/sle')
+
+	def context_dict(self):
+		context_dict = {
+			'title': self.title,
+			'menu_list': self.menu_list,
+			'user': self.user,
+			'nickname': self.nickname,
+			'current_path': self.current_path,
+			'base_path': self.base_path,
 		}
 		return context_dict
