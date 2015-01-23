@@ -1,0 +1,7 @@
+{% if user.is_authenticated %}
+  {% include "main/navbar_user_userinfo.html" %}
+
+{% else %}
+  {% include "main/navbar_user_register.html" %}
+  {% include "main/navbar_user_login.html" %}
+{% endif %}

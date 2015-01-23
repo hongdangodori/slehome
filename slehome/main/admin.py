@@ -1,3 +1,6 @@
 from django.contrib import admin
+from main.models import Title, MenuList, MenuListForNonmembers
 
-# Register your models here.
+admin.site.register(Title)
+admin.site.register(MenuList)
+admin.site.register(MenuListForNonmembers)
