@@ -8,12 +8,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from main.models import Title, MenuList, MenuListForNonmembers
-from main.forms import LoginForm
+from account.forms import LoginForm
 from account.models import MyUser
 
 class Navbar:
 	title = Title.objects.get(num=0)
-	form = LoginForm()
+	login_form = LoginForm()
 	error_state = None
 	menu_list = MenuList.objects.annotate(Count('menu'))\
 						.order_by('display_ord')
@@ -36,10 +36,10 @@ class Navbar:
 				self.nickname = self.user.myuser.nickname
 
 	def user_login(self):
-		self.form = LoginForm(self.request.POST)
-		if self.form.is_valid():
-			user_id = self.form.cleaned_data['user_id']
-			user_password = self.form.cleaned_data['user_password']
+		self.login_form = LoginForm(self.request.POST)
+		if self.login_form.is_valid():
+			user_id = self.login_form.cleaned_data['user_id']
+			user_password = self.login_form.cleaned_data['user_password']
 			self.user = authenticate(username=user_id, password=user_password)
 			if self.user is not None:
 				login(self.request, self.user)
@@ -60,7 +60,7 @@ class Navbar:
 			'menu_list_for_nonmembers': self.menu_list_for_nonmembers,
 			'user': self.user,
 			'nickname': self.nickname,
-			'form': self.form,
+			'login_form': self.login_form,
 			'error_state': self.error_state,
 			'current_path': self.current_path,
 			'base_path': self.base_path,

@@ -4,12 +4,38 @@ from django.contrib.auth.forms import UserCreationForm
 
 from account.models import MyUser, BasicMemberInformation
 
-"""class UserRegisterForm(UserCreationForm):
+from django.utils.translation import ugettext_lazy as _
+
+class LoginForm(forms.Form):
+	user_id = forms.CharField(label='User ID', max_length=50, widget=forms.TextInput)
+	user_password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput)
+
+class BasicMemberInformationRegisterForm(forms.ModelForm):
+
+	class Meta:
+		model = BasicMemberInformation
+		fields = '__all__'
+		#widgets = {
+        #   "fullname" : forms.TextInput(attrs={"class" : "form-control"}),
+		#}
+		labels = {
+			'fullname': _('Name'),
+			'stu_num': _('Student Number'),
+			'auth_key': _('Authorization Key')
+		}
+
+class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
     class Meta:
         model = User
         fields = ("username", "email", "password1", "password2")
+
+    def __init__(self, *args, **kwargs):
+        super(UserRegisterForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = None
 
     def save(self, commit=True):
         user = super(UserRegisterForm, self).save(commit=False)
@@ -17,12 +43,13 @@ from account.models import MyUser, BasicMemberInformation
         if commit:
             user.save()
         return user
-"""
 
 class MyUserRegisterForm(forms.ModelForm):
+
 	class Meta:
 		model = MyUser
 		fields = '__all__' #('user', 'fullname', 'nickname', 'stu_num', 'phone_num')
+		exclude = ['user']
 
 	"""def clean_user(self):
 	    username
@@ -36,8 +63,3 @@ class MyUserRegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user"""
-
-class BasicMemberInformationRegisterForm(forms.ModelForm):
-	class Meta:
-		model = BasicMemberInformation
-		fields = ('fullname', 'stu_num', 'auth_key')
