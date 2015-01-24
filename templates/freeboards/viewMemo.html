@@ -26,7 +26,7 @@
 
 
 
-
+  <div class="writing_view">
     <h3>{{ boardData.title }}</h3>
 
     <table class="table" cellspacing = 0 cellpadding = 5 border = 1 width=500>
@@ -36,6 +36,16 @@
         <tr><td><b>Title </b></td><td> {{ boardData.title }} </td></tr>
         <tr><td><b>Contents </b></td><td> {{ boardData.contents }} </td></tr>
     </table>
+  </div>
+
+
+    <div class="like-btn" align="center">
+      <button type="button" class="btn btn-default btn-lg">
+      <span class="glyphicon glyphicon-star" aria-hidden="true"> Like</span>
+      </button>
+    </div>
+
+    <br>
 
     <table class="table" cellspacing = 0 cellpadding = 0 border = 0 width=500>
         <tr><td>
@@ -44,4 +54,5 @@
             <input type=button value="Delete" OnClick="javascript:boarddelete()">
         </td></tr>
     </table>
+
  {% endblock %}

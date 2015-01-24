@@ -12,6 +12,8 @@ import random, string
 
 from markdown import markdown, ContentEdit
 
+from instagram.client import InstagramAPI
+
 def view_page(request, page_name='',page_num=''):
 	is_history = False
 	if page_name == '':
@@ -80,8 +82,9 @@ def save_page(request,page_name,section='0'):
 			page.save()
 		else :
 			return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
+		content = page.content.replace(cur_content, content, 1)
 			
-	page = Page(page_name=page_name, content=page.content.replace(cur_content,content,1), pub_date=datetime.datetime.now(),new_version=True)
+	page = Page(page_name=page_name, content=content, pub_date=datetime.datetime.now(),new_version=True)
 	page.save()	
 	return HttpResponseRedirect("/sle/wiki/"+page_name+"/")
 
@@ -217,4 +220,28 @@ def delete_file(request,page_name='',file_num=''):
 
 	c={'alert': '올리신 '+file_name+' 파일이 삭제 되었습니다.','location':'/sle/wiki/'+page_name}
 	return render(request,"wiki/alert.html",c)
+
+def instagram_example(request):
+	# access_token = "YOUR_ACCESS_TOKEN"
+	# api = InstagramAPI(access_token="551091148.1118900.39c04ca10ec649a78f80d2bde2cb4aa1")
+	# recent_media, next_ = api.user_recent_media(user_id="hongdan009",count=10)
+	# c=[]
+	# for media in recent_media:
+	# 	c.append(media.caption.text)
+
+	# s = '\n'.join(c)
+	s=""
+	api = InstagramAPI(client_id='1118900683bb413993f5e374ac9ea021', client_secret='d20ea751a7be44adb41ac19d3ad6b42c')
+	# suzy= api.user(user_id="1507979106")
+	# recent_media = suzy.user_media_feed()
+	recent_media, next_ = api.user_recent_media(user_id="1507979106",count=50)
+	while next_:
+		more_media, next_ = api.user_recent_media(with_next_url=next_)
+		recent_media.extend(more_media)	
+
+	for media in recent_media:
+		s += '<img src="'+media.images["thumbnail"].url+'">'
+	return HttpResponse(s)
+
+
 	
