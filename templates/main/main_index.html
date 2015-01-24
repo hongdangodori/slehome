@@ -1,7 +1,13 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-	<div style="text-align:center;">
-		<img src="{{ MEDIA_URL }}IU/6.png">
-	</div>
+	{% if user.is_authenticated %}
+		<div style="text-align:center;">
+			<img src="{{ MEDIA_URL }}IU/6.png">
+		</div>
+	{% else %}
+		<div style="text-align:center;">
+			<h1>Go Logiiiiiiiiiiiiiiiiiin</h1>
+		</div>
+	{% endif %}
 {% endblock %}
