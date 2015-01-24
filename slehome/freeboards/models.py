@@ -13,3 +13,11 @@ class FreeBoard(models.Model):
 
 	def __str__(self):
 		return self.title
+
+class LikeArticle(models.Model):
+	user = models.CharField(max_length=20, blank=True)
+	article = models.ForeignKey('FreeBoard')
+	like = models.BooleanField(default=False)
+ 
+	def is_like(self):
+		return self.like

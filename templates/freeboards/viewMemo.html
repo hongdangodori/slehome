@@ -2,7 +2,6 @@
 
 {% block content %}
     <title>{{ boardData.title }}</title>
-    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
   
   <script language="javascript">
       function boardlist(){
@@ -21,12 +20,15 @@
       function boarddelete(){
           location.href='/sle/freeboards/deleteSpecificRow?writing_id={{writing_id}}&currentPage={{currentPage}}';
       }
+      function likearticle(){
+          location.href='/sle/freeboards/pushLike?writing_id={{writing_id}}&currentPage={{currentPage}}';
+      }
   </script>
   
 
 
 
-
+  <div class="writing_view">
     <h3>{{ boardData.title }}</h3>
 
     <table class="table" cellspacing = 0 cellpadding = 5 border = 1 width=500>
@@ -36,6 +38,22 @@
         <tr><td><b>Title </b></td><td> {{ boardData.title }} </td></tr>
         <tr><td><b>Contents </b></td><td> {{ boardData.contents }} </td></tr>
     </table>
+  </div>
+
+
+    <div class="like-btn" align="center">
+      <button type="button" class="btn btn-default btn-lg" OnClick="javascript:likearticle()"
+      {% if likeData.like == True %}
+        style="color:#ffffff;background-color:#3b5998;"
+      {% else %}
+        style="background-color:#fffff;"
+      {% endif %}>
+        <span class="glyphicon glyphicon-star" aria-hidden="true">Like</span>
+      </button>
+    </a>
+    </div>
+
+    <br>
 
     <table class="table" cellspacing = 0 cellpadding = 0 border = 0 width=500>
         <tr><td>
@@ -44,4 +62,5 @@
             <input type=button value="Delete" OnClick="javascript:boarddelete()">
         </td></tr>
     </table>
+
  {% endblock %}

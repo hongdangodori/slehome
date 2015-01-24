@@ -74,6 +74,8 @@ class NavbarForMembers:
 	base_path = "http://54.169.79.59/sle/"
 
 	def __init__(self, request):
+		self.get_current_path()
+		self.user_setting()
 		self.request = request
 
 	def get_current_path(self):
@@ -101,3 +103,11 @@ class NavbarForMembers:
 			'base_path': self.base_path,
 		}
 		return context_dict
+
+	def call_main_nav(self):
+		self.get_current_path()
+		self.user_setting()
+
+		context={}
+		context.update(self.context_dict())
+		return context
