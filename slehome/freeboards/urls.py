@@ -14,4 +14,6 @@ urlpatterns = patterns('',
 	url(r'^updateBoard/$', views.updateBoard),
 	url(r'^deleteSpecificRow/$', views.deleteSpecificRow),
 	url(r'^searchWithSubject/$', views.searchWithSubject),
+	url(r'^pushLike/$', views.pushLike),
+
 )
