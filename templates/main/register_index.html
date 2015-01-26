@@ -1,0 +1,59 @@
+{% extends "main/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="container">
+	<h1>Validate Yourself</h1>
+</div>
+<div class="container">
+	<div class="row">
+		<form class="form" accept-charset="UTF-8" action="." method="post">{% csrf_token %}
+			<div class="col-lg-6">
+				{% if not next_page %}
+					<div class="form-group">
+						<label for="fullname">Name</label>
+						{{ basic_member_information_register_form.fullname|attr:'class:form-control' }}
+					</div>
+					<div class="form-group">
+						<label for="stu_num">Student Number</label>
+						{{ basic_member_information_register_form.stu_num|attr:'class:form-control' }}
+					</div>
+					<div class="form-group" id="auth_key_div">
+						<label for="auth_key">Authorization Key</label>
+						{{ basic_member_information_register_form.auth_key|attr:'class:form-control' }}
+					</div>
+					<div class="form-group">
+						<label for="no_auth_key" class="checkbox inline no_indent">{{ basic_member_information_register_form.no_auth_key|attr:'class:checkbox' }}<p>I will register without authorization key and wait until the administrator grants my entry.</p></label>
+					</div>
+					<div id="warning_div" style="display:none;">
+						<p style="color:red;">With this option, your account will remain inactive until the administrator grants your entry.</p>
+					</div>
+					<div>
+						<p style="color:red";>{{ message }}</p>
+					</div>
+					<button type="submit" class="btn btn-default" name="register_index">Check</button>
+				{% else %}
+					<div>
+						<h3>Member validation successful!</h3>
+						<p><a href="/sle/register/{{stu_num}}/">Proceed to next page</a></p>
+					</div>
+				{% endif %}
+			</div>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript">
+	$('#id_no_auth_key').change(function() {
+		if(this.checked) {
+			$('#auth_key_div').hide();
+			$('#warning_div').show();
+		} else {
+			$('#auth_key_div').show();
+			$('#warning_div').hide();
+		}
+	});
+</script>
+
+{% endblock %}

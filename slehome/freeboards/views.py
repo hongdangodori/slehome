@@ -6,8 +6,9 @@ from django.shortcuts import render_to_response
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
 
-from freeboards.models import FreeBoard
+from freeboards.models import FreeBoard, LikeArticle
 from freeboards.pagingHelper import pagingHelper
 
 from django.contrib.auth.decorators import login_required
@@ -92,13 +93,20 @@ def viewWork(request):
 	FreeBoard.objects.filter(id=pk).update(hits = boardData.hits + 1)
 	boardData = FreeBoard.objects.get(id=pk)
 
-
 	context = {
-		'writing_id' : request.GET['writing_id'],
-		'currentPage': request.GET['currentPage'],
-		'searchStr' : request.GET['searchStr'],
-		'boardData' : boardData
+			'writing_id' : request.GET['writing_id'],
+			'currentPage': request.GET['currentPage'],
+			'searchStr' : request.GET['searchStr'],
+			'boardData' : boardData,
+			'likeData' : ''
 		}
+
+	try:
+			likeData = LikeArticle.objects.get(article_id=pk)
+			context.update({'likeData' : likeData})
+
+	except ObjectDoesNotExist:
+			pass
 
 	return render(request, 'freeboards/viewMemo.html', context)
 	
@@ -133,8 +141,6 @@ def updateBoard(request):
 		)
 
 	url = '/sle/freeboards/listSpecificPageWork?currentPage=' + currentPage
-
-
 	return HttpResponseRedirect(url)
 
 
@@ -188,3 +194,25 @@ def searchWithSubject(request):
 	return HttpResponseRedirect(url)
 
 
+@login_required
+def pushLike(request):
+	pk = request.GET['writing_id']
+	currentPage = request.GET['currentPage']
+	try:
+		la = LikeArticle.objects.get(user=request.user, article=pk)
+		if(la.is_like()):
+			la.delete()
+		else:
+			la.like = True
+			la.save()
+
+
+	except ObjectDoesNotExist:
+		la = LikeArticle(user = request.user,
+				article = FreeBoard.objects.get(id=pk),
+				like = True,
+			)
+		la.save()
+
+	url = '/sle/freeboards/viewWork?writing_id='+str(pk)+'&currentPage='+str(currentPage)+'&searchStr=None'
+	return HttpResponseRedirect(url)

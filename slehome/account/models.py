@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.db import models
 from django.contrib.auth.models import User
 from account.encryption import encrypted_key
@@ -11,7 +13,7 @@ class MyUser(models.Model):
 
 class BasicMemberInformation(models.Model):
 	fullname = models.CharField(max_length=20)
-	stu_num = models.IntegerField(max_length=8, unique=True)
+	stu_num = models.IntegerField(max_length=8)
 	auth_key = models.CharField(max_length=64, default=encrypted_key())
 	def __str__(self):
 		return self.fullname

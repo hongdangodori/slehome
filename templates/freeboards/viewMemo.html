@@ -2,7 +2,6 @@
 
 {% block content %}
     <title>{{ boardData.title }}</title>
-    <link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
   
   <script language="javascript">
       function boardlist(){
@@ -21,6 +20,7 @@
       function boarddelete(){
           location.href='/sle/freeboards/deleteSpecificRow?writing_id={{writing_id}}&currentPage={{currentPage}}';
       }
+     
   </script>
   
 
@@ -40,9 +40,7 @@
 
 
     <div class="like-btn" align="center">
-      <button type="button" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-star" aria-hidden="true"> Like</span>
-      </button>
+      {% include "freeboards/like.html" %}
     </div>
 
     <br>
