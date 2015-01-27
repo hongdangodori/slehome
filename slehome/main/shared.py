@@ -30,10 +30,10 @@ class Navbar:
 	def user_setting(self):
 		self.user = self.request.user
 		if self.user is not None:
-			if not self.user.is_authenticated():
-				self.nickname = "guest"
-			else:
+			if self.user.is_authenticated():
 				self.nickname = self.user.myuser.nickname
+			else:
+				self.nickname = "guest"
 
 	def user_login(self):
 		self.login_form = LoginForm(self.request.POST)
@@ -74,8 +74,6 @@ class NavbarForMembers:
 	base_path = "http://54.169.79.59/sle/"
 
 	def __init__(self, request):
-		self.get_current_path()
-		self.user_setting()
 		self.request = request
 
 	def get_current_path(self):
