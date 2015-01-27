@@ -7,7 +7,18 @@
 
 
 {% block content %}
-	
+	<script type="text/javascript">
+		function del_file(file_name,file_count){
+			var check = confirm(file_name+" 파일을 삭제하시겠습니까?");
+	      	  /* if(check == true) else false */
+	      	if(check){ 
+	      		location.href="/sle/wiki/{{page_name}}/delete/"+file_count;
+	      	}
+	      	else{
+				
+	      	}
+		}
+	</script>
 	<div class='container' style="word-break: break-all;">
 		<h1>{{page_name}}</h1>
 		
@@ -25,7 +36,8 @@
 			{% for file_data in file_list %}
 			<p>
 				<a href='/sle/wiki/{{page_name}}/download/{{file_data.count}}/'>{{file_data.file_name}}</a>
-				<a href='/sle/wiki/{{page_name}}/delete/{{file_data.count}}/'>삭제</a>
+				<a onclick="del_file('{{file_data.file_name}}',{{file_data.count}})" style="cursor:pointer">삭제</a>
+				<!--<a href='/sle/wiki/{{page_name}}/delete/{{file_data.count}}/'>삭제</a>-->
 			</p>
 		{% endfor %}
 		{% if is_history == False %}

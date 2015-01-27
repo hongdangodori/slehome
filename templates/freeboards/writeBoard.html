@@ -14,6 +14,7 @@
 <table class"table" border=1 cellspacing=0 cellpadding=0>
 <tr><td>
   <input type="submit" value="Write" OnClick="javascript:writeCheck();">
+  <input type="submit" value="Cancle" OnClick="javascript:cancleCheck();">
 </td></tr>
 </table>
 
@@ -22,23 +23,35 @@
       function writeCheck() {
           var form = document.writeform;
 
-          if (!form.name.value)
-          {
+          if (!form.name.value){
               alert("이름을 적어주세요");
               form.name.focus();
               return;
           }
-          if (!form.title.value) {
+          if (!form.category.value){
+              alert("카테고리를 적어주세요");
+              form.title.focus();
+              return;
+          }
+          if (!form.title.value){
               alert("제목을 적어주세요");
               form.title.focus();
               return;
           }
-          if (!form.contents.value) {
+          if (!form.contents.value){
               alert("내용을 적어주세요");
               form.contents.focus();
               return;
           }
           form.submit();
+      }
+
+      function cancleCheck(){
+        if (confirm("Cancle writing an article?") == true) {
+            location.href="/sle/freeboards/"
+        } else {
+            return;
+        }
       }
 </script>
 

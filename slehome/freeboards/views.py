@@ -102,7 +102,7 @@ def viewWork(request):
 		}
 
 	try:
-			likeData = LikeArticle.objects.get(id=pk)
+			likeData = LikeArticle.objects.get(article_id=pk)
 			context.update({'likeData' : likeData})
 
 	except ObjectDoesNotExist:
@@ -205,6 +205,7 @@ def pushLike(request):
 		else:
 			la.like = True
 			la.save()
+
 
 	except ObjectDoesNotExist:
 		la = LikeArticle(user = request.user,

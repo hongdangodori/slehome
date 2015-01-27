@@ -20,9 +20,7 @@
       function boarddelete(){
           location.href='/sle/freeboards/deleteSpecificRow?writing_id={{writing_id}}&currentPage={{currentPage}}';
       }
-      function likearticle(){
-          location.href='/sle/freeboards/pushLike?writing_id={{writing_id}}&currentPage={{currentPage}}';
-      }
+     
   </script>
   
 
@@ -42,21 +40,7 @@
 
 
     <div class="like-btn" align="center">
-<<<<<<< HEAD
-      <button type="button" class="btn btn-default btn-lg" OnClick="javascript:likearticle()"
-      {% if likeData.like == True %}
-        style="color:#ffffff;background-color:#3b5998;"
-      {% else %}
-        style="background-color:#fffff;"
-      {% endif %}>
-        <span class="glyphicon glyphicon-star" aria-hidden="true">Like</span>
-      </button>
-    </a>
-=======
-      <button type="button" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-star" aria-hidden="true"> Like</span>
-      </button>
->>>>>>> b4d535bb6107839f7a55806817826ce07814a0f6
+      {% include "freeboards/like.html" %}
     </div>
 
     <br>
