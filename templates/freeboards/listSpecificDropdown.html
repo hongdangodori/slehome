@@ -19,22 +19,55 @@
     </table>
 
 
-    <div class="dropdown">
-    {% if boardList %}
-        {% for boardRow in boardList %}
-        <div class="col-md-12">
-            <button class="btn btn-default dropdown-toggle" type="button" id="menu{{ boardRow.id }}" data-toggle="dropdown" aria-label="Left Align" style="width:100%;"> {{ boardRow.title }}
-            <span class="caret"></span></button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menu{{ boardRow.id }}">
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ boardRow.contents }}</a></li>
-            </ul>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p></p>
-    {% endif %}
+    <div class="panel-group" id="accordion">
+        {% if boardList %}
+            {% for boardRow in boardList %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordian-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            {{ boardRow.title }}</a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            {{ boardRow.contents }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p></p>
+        {% endif %}
     </div>
     
+    <script type="text/javascript">
+
+    var elements = document.getElementsByTagName("div");
+
+    // 모든 영역 접기
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[i].className == "panel panel-default") {
+        elements[i].style.display="none";
+      } else if (elements[i].className == "panel panel-default") {
+        elements[i].onclick=switchDisplay;
+      }
+    }
+
+    // 상태에 따라 접거나 펼치기
+    function switchDisplay() {
+
+      var parent = this.parentNode;
+      var target = parent.getElementsByTagName("div")[1];
+
+      if (target.style.display == "none") {
+        target.style.display="block";
+      } else {
+        target.style.display="none";
+      }
+      return false;
+    }
+    </script>
     
     <table class="table" cellspacing=1 width=700 border=1 >
         <tr> <td>
@@ -66,4 +99,6 @@
             </td>
         </tr>
     </table>
+
+
 {% endblock %}

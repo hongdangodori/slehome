@@ -4,7 +4,7 @@
 
 <table class="table" width=700 border=1 cellspacing=0 cellpadding=5>
   <form name="writeform" method=post action="/sle/freeboards/doWriteBoard/">
-  	<tr><td><b>Name</b></td><td><input type="text" name="name" size=50  maxlength=50></td></tr>
+  	<tr><td><b>Name</b></td><td>{{name}}</td></tr>
   	<tr><td><b>Category</b></td><td><input type="text" name="category" size=50  maxlength=50></td></tr>
   	<tr><td><b>Title</b></td><td><input type="text" name="title" size=50  maxlength=50></td></tr>
   	<tr><td><b>Contents</b></td><td><textarea name="contents" cols=50 rows=10></textarea></td></tr>
@@ -23,11 +23,6 @@
       function writeCheck() {
           var form = document.writeform;
 
-          if (!form.name.value){
-              alert("이름을 적어주세요");
-              form.name.focus();
-              return;
-          }
           if (!form.category.value){
               alert("카테고리를 적어주세요");
               form.title.focus();
@@ -47,7 +42,7 @@
       }
 
       function cancleCheck(){
-        if (confirm("Cancle writing an article?") == true) {
+        if (confirm("Cancle?") == true) {
             location.href="/sle/freeboards/"
         } else {
             return;
