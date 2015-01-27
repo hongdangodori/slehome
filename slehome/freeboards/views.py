@@ -1,7 +1,6 @@
+#-*- coding:utf-8 -*-
 from django.shortcuts import render
 
-# Create your views here.
-#-*- coding:utf-8 -*-
 from django.shortcuts import render_to_response
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -12,7 +11,7 @@ from freeboards.models import FreeBoard, LikeArticle
 from freeboards.pagingHelper import pagingHelper
 
 from django.contrib.auth.decorators import login_required
-from main.shared import NavbarForMembers
+from navbar.shared import NavbarForMembers
 
 rowsPerPage = 10
 
@@ -47,16 +46,31 @@ def home(request):
 	context.update(navbar.context_dict())
 	#######################
 
-	return render(request, "freeboards/listSpecificPage.html", context)
+	return render(request, "freeboards/listSpecificDropdown.html", context)
 
 
 def showWriteForm(request):
-	return render(request, 'freeboards/writeBoard.html')
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
+	context = { 'name': request.user }
+	######################
+	context.update(navbar.context_dict())
+	#######################
+	return render(request, 'freeboards/writeBoard.html', context)
 
 
 @csrf_exempt
 def doWriteBoard(request):
-	br = FreeBoard(user = request.POST['name'],
+
+	br = FreeBoard(user = request.user,
 		category = request.POST['category'],
 		title = request.POST['title'],
 		contents = request.POST['contents'],
@@ -69,6 +83,16 @@ def doWriteBoard(request):
 
 
 def listSpecificPageWork(request):
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
 	currentPage = request.GET['currentPage']
 	totalCnt = FreeBoard.objects.all().count()
 	boardList = FreeBoard.objects.order_by('-id')[int(rowsPerPage)*(int(currentPage)-1) : int(rowsPerPage)*int(currentPage)]
@@ -82,13 +106,27 @@ def listSpecificPageWork(request):
 		'totalPageList': totalPageList
 		}
 
+	context.update(navbar.context_dict())
+
 	return render(request, 'freeboards/listSpecificPage.html', context)
 
 
 def viewWork(request):
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
+
 	pk = request.GET['writing_id']
 	boardData = FreeBoard.objects.get(id=pk)
-
+	likeCnt = LikeArticle.objects.filter(article_id = pk).count()
+	
 	# hit++
 	FreeBoard.objects.filter(id=pk).update(hits = boardData.hits + 1)
 	boardData = FreeBoard.objects.get(id=pk)
@@ -98,20 +136,33 @@ def viewWork(request):
 			'currentPage': request.GET['currentPage'],
 			'searchStr' : request.GET['searchStr'],
 			'boardData' : boardData,
+			'likeCnt' : likeCnt,
 			'likeData' : ''
 		}
 
 	try:
-			likeData = LikeArticle.objects.get(article_id=pk)
+			likeData = LikeArticle.objects.get(user=request.user, article_id=pk)
 			context.update({'likeData' : likeData})
 
 	except ObjectDoesNotExist:
 			pass
 
+	context.update(navbar.context_dict())
+
 	return render(request, 'freeboards/viewMemo.html', context)
 	
 
 def listSpecificPageUpdate(request):
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
 	writing_id = request.GET['writing_id']
 	currentPage = request.GET['currentPage']
 	searchStr = request.GET['searchStr']
@@ -124,14 +175,28 @@ def listSpecificPageUpdate(request):
 		'boardData': boardData,
 	}
 
+	context.update(navbar.context_dict())
+
 	return render(request, 'freeboards/viewForUpdate.html', context)
 
 
 @csrf_exempt
 def updateBoard(request):
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
 	writing_id = request.POST['writing_id']
 	currentPage = request.POST['currentPage']
 	searchStr = request.POST['searchStr']
+
+	context = {}
 
 	# update Database
 	FreeBoard.objects.filter(id=writing_id).update(
@@ -139,6 +204,8 @@ def updateBoard(request):
 		title = request.POST['title'],
 		contents = request.POST['contents'],
 		)
+
+	context.update(navbar.context_dict())
 
 	url = '/sle/freeboards/listSpecificPageWork?currentPage=' + currentPage
 	return HttpResponseRedirect(url)
@@ -166,6 +233,16 @@ def deleteSpecificRow(request):
 
 
 def listSearchedSpecificPage(request):
+	#######################
+	navbar = NavbarForMembers(request)
+	navbar.get_current_path()
+	navbar.user_setting()
+
+	if request.method == "POST":
+		if 'logout' in request.POST:
+			navbar.user_logout()
+	########################
+
 	searchStr = request.GET['searchStr']
 	pageForView = request.GET['pageForView']
 
@@ -182,6 +259,8 @@ def listSearchedSpecificPage(request):
 		'searchStr': searchStr,
 		'totalPageList': totalPageList,
 	}
+
+	context.update(navbar.context_dict())
 
 	return render(request, 'freeboards/listSearchedSpecificPage.html', context)
 

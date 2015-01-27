@@ -7,12 +7,15 @@ from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
-from main.models import Title, MenuList, MenuListForNonmembers
+from navbar.models import Title, MenuList, MenuListForNonmembers
 from account.forms import LoginForm
 from account.models import MyUser
 
 class Navbar:
-	title = Title.objects.get(num=0)
+	try:
+		title = Title.objects.get(num=0)
+	except:
+		title = "Slegizzagi"
 	login_form = LoginForm()
 	error_state = None
 	menu_list = MenuList.objects.annotate(Count('menu'))\
@@ -30,10 +33,10 @@ class Navbar:
 	def user_setting(self):
 		self.user = self.request.user
 		if self.user is not None:
-			if not self.user.is_authenticated():
-				self.nickname = "guest"
-			else:
+			if self.user.is_authenticated():
 				self.nickname = self.user.myuser.nickname
+			else:
+				self.nickname = "guest"
 
 	def user_login(self):
 		self.login_form = LoginForm(self.request.POST)
@@ -68,7 +71,10 @@ class Navbar:
 		return context_dict
 
 class NavbarForMembers:
-	title = Title.objects.get(num=0)
+	try:
+		title = Title.objects.get(num=0)
+	except:
+		title = "Slegizzagi"
 	menu_list = MenuList.objects.annotate(Count('menu'))\
 						.order_by('display_ord')
 	base_path = "http://54.169.79.59/sle/"

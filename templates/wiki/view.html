@@ -12,7 +12,7 @@
 			var check = confirm(file_name+" 파일을 삭제하시겠습니까?");
 	      	  /* if(check == true) else false */
 	      	if(check){ 
-	      		location.href="/sle/wiki/{{page_name}}/delete/"+file_count;
+	      		location.href="/sle/wiki/delete/{{page_name}}/"+file_count;
 	      	}
 	      	else{
 				
@@ -26,23 +26,23 @@
 			{{pub_date}}
 
 			{% if is_history == False %}
-				<a href="/sle/wiki/{{page_name}}/edit/0/">Edit this page?</a>
+				<a href="/sle/wiki/edit/{{page_name}}/0/">Edit this page?</a>
 				<br/>
-				<a href="/sle/wiki/{{page_name}}/history/">#history</a>
+				<a href="/sle/wiki/history/{{page_name}}/">#history</a>
 			{% endif %}
 		</div>
 		<hr />
 		<div class='container'>	
 			{% for file_data in file_list %}
 			<p>
-				<a href='/sle/wiki/{{page_name}}/download/{{file_data.count}}/'>{{file_data.file_name}}</a>
+				<a href='/sle/wiki/download/{{page_name}}/{{file_data.count}}/'>{{file_data.file_name}}</a>
 				<a onclick="del_file('{{file_data.file_name}}',{{file_data.count}})" style="cursor:pointer">삭제</a>
 				<!--<a href='/sle/wiki/{{page_name}}/delete/{{file_data.count}}/'>삭제</a>-->
 			</p>
 		{% endfor %}
 		{% if is_history == False %}
 	
-			<form  class="form-inline" action="/sle/wiki/{{page_name}}/upload/" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
+			<form  class="form-inline" action="/sle/wiki/upload/{{page_name}}/" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
 				<div class="form-group">
 					<input type="file" name="file" id="id_file" />
 				</div>
@@ -63,7 +63,7 @@
 		</p>
 		<hr />
 		
-		<hr />
+	
 		
 	</div>
 {% endblock %}

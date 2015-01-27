@@ -10,24 +10,31 @@
         <meta name="author" content="">
 
         <!-- Bootstrap core CSS -->
-        <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+        <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
 
         <!-- Custom styles for this template -->
-        <link href="{% static "bootstrap/css/styles.css" %}" rel="stylesheet">
-        <link href="{% static "bootstrap/css/navbar.css" %}" rel="stylesheet">
-        <link href="{% static "bootstrap/css/contents.css" %}" rel="stylesheet">
+       
         <title>wiki page | {% block title %}{% endblock %}</title>
         <script src="{% static "bootstrap/js/jquery.js" %}"></script>
         <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
     </head>
     <body>
+        {% if user.is_authenticated %}
         {% include "wiki/wiki_navbar.html" %}
-        <br>
-        <div class="container">
-            {% block content %}{% endblock %}    
+            <br>
+            <div class="container">
+            
+                    {% block content %}{% endblock %}    
+               
 
+            </div>
+        {% else %}
+           <script type="text/javascript">
+               // window.alert("로그인을 하시고 이용해주세요.");
+                location.replace("/sle/"); 
+            </script>
 
-        </div>
+        {% endif %}
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->

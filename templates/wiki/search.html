@@ -8,13 +8,13 @@
 
 {% block content %}
 <h1>"{{search_key}}" 검색 결과</h1>
-<p><a href="/sle/wiki/{{search_key}}/edit/0/">{{search_key}}</a>페이지가 존재하지 않습니다. 페이지를 만드시고 싶으시면 왼쪽의 파란 페이지 이름을 클릭하세요.</p>
+<p><a href="/sle/wiki/edit/{{search_key}}/0/">{{search_key}}</a>페이지가 존재하지 않습니다. 페이지를 만드시고 싶으시면 왼쪽의 파란 페이지 이름을 클릭하세요.</p>
 <div class="container">
 	<p><h3>유사 페이지 검색 결과</h3></p>
 {% for page_data in page %}
 		{% autoescape off %}
 		<div>
-			<a href="/sle/wiki/{{page_data.page_name}}/"><h3>{{page_data.page_name}}</h3></a>
+			<a href="/sle/wiki/page/{{page_data.page_name}}/"><h3>{{page_data.page_name}}</h3></a>
 			<br />
 			{{page_data.content}}
 		</div>
