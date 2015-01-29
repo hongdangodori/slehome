@@ -41,10 +41,12 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'widget_tweaks',
     'account',
-    'main',
+    'navbar',
     'members',
     'wiki',
     'freeboards',
+    'photo',
+    'exception',
 )
 
 MIDDLEWARE_CLASSES = (

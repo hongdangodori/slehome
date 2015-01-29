@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}
+
+{{alert}}
+
+{% endblock %}
+
+
+{% block content %}
+
+<script type="text/javascript">
+	window.alert("옳바르지 않은 주소입니다.");
+	location.replace("/"); 
+</script>
+
+
+{% endblock %}

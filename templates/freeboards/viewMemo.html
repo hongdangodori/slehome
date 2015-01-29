@@ -1,4 +1,4 @@
-{% extends "freeboards/freeboards_base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
     <title>{{ boardData.title }}</title>
@@ -53,4 +53,9 @@
         </td></tr>
     </table>
 
+
+  <div class="comment_table">
+    {% include %}
+  </div>
+  
  {% endblock %}

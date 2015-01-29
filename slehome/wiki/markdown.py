@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 def markdown(page_name, text) :
-    edit_url = '/sle/wiki/edit/' + page_name + '/'
+    edit_url = '/sle/wiki/' + page_name + '/edit/'
 
     # 제목 태그
     token1 = {
@@ -18,10 +18,10 @@ def markdown(page_name, text) :
         }
     # 링크 태그
     token3 = {
-        '[[' : [']]', '<a href="/sle/wiki/page/', '/">', '</a>'],
+        '[[' : [']]', '<a href="/sle/wiki/', '/">', '</a>'],
         '[[[' : [']]]', '<a href="', '" target=new>', '</a>'],
         '[youtube]((' : ['))', '<br /><iframe width="420" height="315" src="//www.youtube.com/embed/', '" frameborder="0" allowfullscreen>', '</iframe><br />'],
-        '[image]((' : ['))', '<br /><img src="', '', '" class="img-rounded"></image><br />']
+        '[image]((' : ['))', '<br /><img src="', '', '" class="img-rounded" style="width:20%;height:20%"></img><br />']
     }
     token3 = OrderedDict(sorted(token3.items(), key = lambda t : t[0], reverse = True))
 
@@ -30,7 +30,7 @@ def markdown(page_name, text) :
         '===' : 1,
         '====' : 2
         }
-    
+
     # 줄 단위로 나누기
     words = text.split('\r\n')
 
@@ -66,12 +66,12 @@ def markdown(page_name, text) :
                         second, third = second + 1, 0
                         if token_enum[tok] == 0 :
                             first, second, third = first + 1, 0, 0
-                
+
                 context += [{
-                    'tok' : token_enum[tok], 
-                    'section' : section, 
+                    'tok' : token_enum[tok],
+                    'section' : section,
                     'line' : lines,
-                    'next_line' : -1, 
+                    'next_line' : -1,
                     'title' : title,
                     'number' : [first, second, third]
                     }]

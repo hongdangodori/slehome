@@ -1,16 +1,6 @@
-{% extends "freeboards/freeboards_base.html" %}
-
-{% block header %} 
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-{% endblock %}
-
-{% block title %} Dropdown {% endblock %}
+{% extends "base.html" %}
 
 {% block content %}
-
-
     <table class="table" cellspacing=1 width=700 border=0>
         <tr>
             <td>Total writings: {{ totalCnt }}</td>
@@ -19,22 +9,33 @@
     </table>
 
 
-    <div class="dropdown">
-    {% if boardList %}
-        {% for boardRow in boardList %}
-        <div class="col-md-12">
-            <button class="btn btn-default dropdown-toggle" type="button" id="menu{{ boardRow.id }}" data-toggle="dropdown" aria-label="Left Align" style="width:100%;"> {{ boardRow.title }}
-            <span class="caret"></span></button>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="menu{{ boardRow.id }}">
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">{{ boardRow.contents }}</a></li>
-            </ul>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p></p>
-    {% endif %}
+    <div class="panel-group" id="accordion">
+        {% if boardList %}
+            {% for boardRow in boardList %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a class="accordian-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{boardRow.id}}">
+                            {{ boardRow.title }}<p aligh=right>{{boardRow.user}}, {{boardRow.pub_date}}</p></a>
+                        </h4>
+                    </div>
+                    <div id="collapse{{boardRow.id}}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            {{ boardRow.contents }}<br>
+                            <div align=right>
+                            User: {{ boardRow.user }}<br>
+                            Published Date: {{ boardRow.pub_date}}<br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p></p>
+        {% endif %}
     </div>
-    
+
+
     
     <table class="table" cellspacing=1 width=700 border=1 >
         <tr> <td>
@@ -51,12 +52,12 @@
                         
                     ]                
             {% endfor %}
-            </td> </tr>
+        </td> </tr>
     </table>
 
     <table class="table" width=700>
         <tr>
-            <td><input type=button value="Write"  OnClick="window.location='/sle/freeboards/showWriteForm'">    </td>
+            <td><input type=button value="Write"  OnClick="window.location='/sle/freeboards/writing_idWriteForm'">    </td>
             
             <td><form name=searchf method=post action="/sle/freeboards/searchWithSubject/">
                 <p align=right>
@@ -66,4 +67,6 @@
             </td>
         </tr>
     </table>
+
+
 {% endblock %}

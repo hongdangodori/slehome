@@ -18,7 +18,7 @@ def markdown(page_name, text) :
         '[[' : [']]', '<a href="/sle/wiki/', '/">', '</a>'],
         '[[[' : [']]]', '<a href="', '" target=new>', '</a>'],
         '[youtube]((' : ['))', '<br /><iframe width="420" height="315" src="//www.youtube.com/embed/', '" frameborder="0" allowfullscreen>', '</iframe><br />'],
-        '[image]((' : ['))', '<br /><img src="', '', '" class="img-rounded"></image><br />']
+        '[image]((' : ['))', '<br /><img src="', '', '" class="img-rounded" style="width:20%;height:20%"></image><br />']
     }
     token3 = OrderedDict(sorted(token3.items(), key = lambda t : t[0], reverse = True))
 
@@ -68,8 +68,7 @@ def markdown(page_name, text) :
                     }]
 
                 words[lines - 1] = words[lines - 1].replace(tok, token1[tok][0] + str(section) + token1[tok][1], 1)
-                # <exception>
-                words[lines - 1] = words[lines - 1].replace(tok, token1[tok][2] + str(section) + token1[tok][3], 1)
+                words[lines - 1] = (token1[tok][2] + str(section) + token1[tok][3]).join(words[lines - 1].rsplit(tok, 1))
 
                 break
 

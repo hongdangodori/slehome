@@ -1,9 +1,11 @@
-{% extends "main/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
 	{% if user.is_authenticated %}
 		<div style="text-align:center;">
 			<img src="{{ MEDIA_URL }}IU/6.png">
+			<br/>
+			<embed src="http://player.bgmstore.net/ZrXFg" allowscriptaccess="always" allowfullscreen="true" width="120" height="30"></embed>
 		</div>
 	{% else %}
 		<div style="text-align:center;">
