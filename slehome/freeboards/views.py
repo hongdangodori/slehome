@@ -60,7 +60,7 @@ def showWriteForm(request):
 			navbar.user_logout()
 	########################
 
-	context = { 'name': request.user }
+	context = { 'name': request.user.myuser.nickname }
 	######################
 	context.update(navbar.context_dict())
 	#######################
@@ -70,7 +70,7 @@ def showWriteForm(request):
 @csrf_exempt
 def doWriteBoard(request):
 
-	br = FreeBoard(user = request.user,
+	br = FreeBoard(user = request.user.myuser.nickname,
 		category = request.POST['category'],
 		title = request.POST['title'],
 		contents = request.POST['contents'],
@@ -141,7 +141,7 @@ def viewWork(request):
 		}
 
 	try:
-			likeData = LikeArticle.objects.get(user=request.user, article_id=pk)
+			likeData = LikeArticle.objects.get(user=request.user.myuser.nickname, article_id=pk)
 			context.update({'likeData' : likeData})
 
 	except ObjectDoesNotExist:
@@ -278,7 +278,7 @@ def pushLike(request):
 	pk = request.GET['writing_id']
 	currentPage = request.GET['currentPage']
 	try:
-		la = LikeArticle.objects.get(user=request.user, article=pk)
+		la = LikeArticle.objects.get(user=request.user.myuser.nickname, article=pk)
 		if(la.is_like()):
 			la.delete()
 		else:
@@ -287,7 +287,7 @@ def pushLike(request):
 
 
 	except ObjectDoesNotExist:
-		la = LikeArticle(user = request.user,
+		la = LikeArticle(user = request.user.myuser.nickname,
 				article = FreeBoard.objects.get(id=pk),
 				like = True,
 			)

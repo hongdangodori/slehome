@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from navbar.models import Title, MenuList, MenuListForNonmembers
-from account.forms import LoginForm
+from navbar.forms import LoginForm
 from account.models import MyUser
 
 class Navbar:

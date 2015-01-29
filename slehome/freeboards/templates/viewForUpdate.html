@@ -1,0 +1,59 @@
+<html>
+
+	<head>
+		<title>Edit Writing</title>
+		<link href="{{ STATIC_URL }}static/css/bootstrap.css" rel="stylesheet">
+	
+
+	<script language="javascript">
+	 function writeCheck()
+	 {
+	     var form = document.modifyform;
+
+	      if( !form.title.value )
+	     {
+	         alert( "제목을 적어주세요" );
+	         form.title.focus();
+	         return;
+	     }
+	     if( !form.contents.value )
+	     {
+	         alert( "내용을 적어주세요" );
+	         form.contents.focus();
+	         return;
+	     }
+	     form.submit();
+	 }
+
+	  function boardlist()
+	 {
+	     var s = "{{searchStr}}";
+
+	        if(s=="None")
+	            location.href = '/listSpecificPageWork?current_page={{current_page}}';
+	        else
+	            location.href = '/listSearchedSpecificPageWork?pageForView={{current_page}}&searchStr={{searchStr}}';
+	 }
+	</script>
+	</head>
+
+	<table cellspacing = 0 cellpadding = 5 border = 1 width=500>
+	<form name=modifyform method=post action="/sle/freeboards/updateBoard/">
+	    <input type=hidden name=memo_id  value="{{memo_id}}">
+	    <input type=hidden name=current_page  value="{{current_page}} ">
+	    <input type=hidden name=searchStr  value="{{searchStr}} ">
+
+	    <tr><td><b>Name</b></td><td>{{ boardData.user }}<input type=hidden name=name size=50  maxlength=30 value="{{ boardData.user }}"></td><tr>
+	    <tr><td><b>Category</b></td><td><input type=text name=mail size=50  maxlength=50 value="{{ boardData.category }}"></td></tr>
+	    <tr><td><b>Title</b></td><td><input type=text name=subject size=50  maxlength=50 value="{{ boardData.title }}"></td></tr>
+	    <tr><td><b>Contents</b></td><td><textarea name=memo cols=50 rows=10>{{ boardData.contents }}</textarea></td></tr>
+	</form>
+	</table>
+
+	<table  cellspacing = 0 cellpadding = 0 border = 0 width=500>
+	    <tr><td>
+	        <input type=button value="Confirm" OnClick="javascript:writeCheck();">
+	        <input type=button value="List" OnClick="javascript:boardlist()">
+	    </td></tr>
+	</table>
+</html>

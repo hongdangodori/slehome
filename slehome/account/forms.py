@@ -9,10 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from account.models import MyUser, BasicMemberInformation
 
-class LoginForm(forms.Form):
-	user_id = forms.CharField(label='User ID', max_length=50, widget=forms.TextInput)
-	user_password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput)
-
 
 class BasicMemberInformationRegisterForm(forms.Form):
 	fullname = forms.CharField(max_length=20, required=True)
