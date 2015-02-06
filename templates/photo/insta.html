@@ -1,20 +1,210 @@
-{% extends "photo/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 
 instagram
 
 {% endblock %}
+{% load staticfiles %}
+
+{% block header %}
+<link href="{% static "mycss/insta.css" %}" rel="stylesheet" />
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#form-com-id').submit(function() {
+      var com = $('#idcomment').val();
+      var url = $('#img_url').attr('src');
+      $.ajax({
+        url : "/sle/photo/comment/push/",
+        type : "POST",
+        data : {
+          photo : url,
+          comments : com,
+          csrfmiddlewaretoken : '{{csrf_token}}',
+        },
+        dataType : "json",
+        success : function(data) {
+          if(data.alert != '') {
+            alert(data.alert);
+          }
+          else {
+            $('#idcomment').val('');
+
+            var div_com = document.getElementsByClassName('comments');
+
+            var div = document.createElement('div');
+            div.className = 'comment';
+
+            var div_user = document.createElement('div');
+            div_user.className = 'com-user';
+            div_user.appendChild(document.createTextNode(data.user));
+
+            var div_content = document.createElement('div');
+            div_content.className = 'com-content';
+            div_content.appendChild(document.createTextNode(data.comments));
+
+            var div_date = document.createElement('div');
+            div_date.className = 'com-date';
+            div_date.appendChild(document.createTextNode(data.pub_date));
+
+            div.appendChild(div_user);
+            div.appendChild(div_content);
+            div.appendChild(div_date);
+
+            div_com[0].appendChild(div);
+          }
+        },
+        failure : function(data) {
+          alert('fail!');
+        },
+      });
+    });
+  });
+</script>
+
+<!-- modal javascript -->
+<script language="javascript">
+	function mk_modal(img_src, pub_date) {
+		$('.photos_modal').html('<img id="img_url" src="'+img_src+'" style="height:98%;width:98%;" />');
+    $('.photos_date').html(pub_date);
+
+    $.ajax({
+      url : "/sle/photo/comment/show/",
+      type : "POST",
+      data : {
+        photo : img_src,
+        csrfmiddlewaretoken : '{{csrf_token}}',
+      },
+      dataType : "json",
+      success : function(data) {
+        if(data.alert != '') {
+          alert(data.alert);
+        }
+        else{
+          var list = document.getElementById("com-list");
+          while(list.hasChildNodes()) {
+            list.removeChild(list.firstChild);
+          }
+
+          if(data.comments != ''){
+
+            var div_com = document.getElementsByClassName('comments');
+
+            var div_user, div_content, div_date;
+            for(var i = 0; i < data.comments.length; i++) {
+              div = document.createElement('div');
+              div.className = 'comment';
+
+              div_user = document.createElement('div');
+              div_user.className = 'com-user';
+              div_user.appendChild(document.createTextNode(data.user[i]));
+
+              div_content = document.createElement('div');
+              div_content.className = 'com-content';
+              div_content.appendChild(document.createTextNode(data.comments[i]));
+
+              div_date = document.createElement('div');
+              div_date.className = 'com-date';
+              div_date.appendChild(document.createTextNode(data.pub_date[i]));
+
+              div.appendChild(div_user);
+              div.appendChild(div_content);
+              div.appendChild(div_date);
+
+              div_com[0].appendChild(div);
+            }
+          }
+        }
+      },
+      failure : function(data) {
+        alert('fail!');
+      }
+    });
+
+		$('#photoModal').modal('show');
+	};
+</script>
+
+{% endblock %}
 
 {% block content %}
 
-	<div class="row">
-		{% for media in photo %}
-  			<div class="col-xs-6 col-md-3">
-			    <a href="#" class="thumbnail">
-      				<img src="{{ media }}" alt="..." />
-    			</a>
-  			</div>
-  		{% endfor %}
-	</div>
+<!-- modal -->
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="photoModalLabel">Sle Photos</h4>
+        <p class="photos_date" style="text-align:right;"></p>
+      </div>
+      <div class="modal-body">
+        <div class="photos_modal" style="align:center;" data-dismiss="modal">
+
+        </div>
+      </div>
+      <div class="modal-footer" style="text-align:left;">
+        <div class="form-comment" style="float:left;padding-bottom:40px;">
+          <form role="form" class="form-inline" id="form-com-id" onsubmit="return false;" action="." method="POST">{% csrf_token %}
+            <div class="form-group">
+              <input type="text" class="form-control" id="idcomment" placeholder="leave your comment.">
+            </div>
+            <button type="submit" class="btn btn-default" id="btn-comment-submit">Submit</button>
+          </form>
+        </div>
+        <div class="comments-group">
+          <div id="com-list" class="comments" style="padding-top:30px;">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- thumbnail -->
+<div class="row">
+  {% for media in photo %}
+  <div class="col-xs-6 col-md-3">
+    <a data-target="#photoModal" class="thumbnail" data-toggle="modal" onclick="mk_modal('{{media.photo}}', '{{media.pub_date}}')">
+      <img src="{{media.photo}}" alt="..." />
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- pagination -->
+<nav style="text-align:center;">
+  <ul class="pagination">
+  {% if prev_page < 1 %}
+    <li class="disabled">
+      <a href="" aria-label="Previous" class="not-active">
+  {% else %}
+    <li>
+      <a href="/sle/photo/{{prev_page}}/" aria-label="Previous">
+  {% endif %}
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+  {% for page in page_list %}
+    {% if page == page_number %}
+    <li class="active"><a href="/sle/photo/{{page}}">{{page}}</a></li>
+    {% else %}
+    <li><a href="/sle/photo/{{page}}">{{page}}</a></li>
+    {% endif %}
+  {% endfor %}
+  {% if next_page > total_page %}
+    <li class="disabled">
+      <a href="" aria-label="Next" class="not-active">
+  {% else %}
+    <li>
+      <a href="/sle/photo/{{next_page}}/" aria-label="Next">
+  {% endif %}
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
 {% endblock %}

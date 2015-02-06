@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <table class="table" cellspacing=1 width=700 border=0>
+  <table class="table" width=700>
       <tr>
           <td>Total writings: {{ totalCnt }}</td>
           <td><p align=right> Page:{{ pageForView }}
@@ -9,7 +9,7 @@
       </tr>
   </table>
 
-  <table class="table" cellspacing=1 width=700 border=1>
+  <table class="table table-hover" width=700>
       <tr>
           <td width=50><p align=center>No.</p></td>
           <td width=80><p align=center>Category</p></td>
@@ -30,7 +30,7 @@
                         <a href="/sle/freeboards/viewWork?writing_id={{ boardRow.id }}&currentPage={{ pageForView }}&searchStr={{searchStr}}" title="{{ boardRow.contents}}">{{ boardRow.title }}
                     </p>
                 </td>
-                <td width=80><p align=center>{{ boardRow.user }}</p></td>
+                <td width=80><p align=center>{{ boardRow.user.myuser }}</p></td>
                 <td width=80><p align=center>{{ boardRow.pub_date }}</p></td>
                 <td width=80><p align=center>{{ boardRow.hits }}</p></td>
                 </tr>
@@ -41,19 +41,18 @@
       {% endif %}
   </table>
 
-  <table class="table" cellspacing=1 width=700 border=1 >
+  <table class="table" width=700>
       <tr> <td>
           {% for page in totalPageList %}
               <a href="/sle/freeboards/listSearchedSpecificPage?searchStr={{searchStr}}&pageForView={{page}}" >
               [
-              {% ifequal page pageForView %}
+              {% if page == pageForView %}
                   <b>
-              {% endifequal %}
-              {{page}}
-
-              {% ifequal page pageForView  %}
+              {% endif %}
+                  {{page}}
+              {% if page == pageForView  %}
                   </b>
-              {% endifequal %}
+              {% endif %}
               ]
           {% endfor %}
           </td> </tr>

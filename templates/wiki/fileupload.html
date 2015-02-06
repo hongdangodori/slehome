@@ -12,6 +12,6 @@
 <form method="post" action="/sle/wiki/upload/{{page_name}}/">{% csrf_token %}
 	<textarea name="content" rows="20" cols="60">{{content}}</textarea>
 	<br/>
-	<input type="submit" value="Save Page"/>
+	<input type="submit" class="btn btn-default" value="Save Page"/>
 </form>
 {% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="container">
+	<h1>Create Your Account</h1>
+</div>
+<div class="container" style="margin-bottom:3%;">
+	<div class="row">
+		<form class="form" accept-charset="UTF-8" action="." method="post">{% csrf_token %}
+			<div class="col-lg-6">
+				<hr />
+				<fieldset disabled>
+				<h3>Basic Information</h3>
+					<div class="form-group">
+						<label for="fullname">Name</label>
+						{{ my_user_register_form.fullname|attr:'class:form-control' }}
+					</div>
+					<div class="form-group">
+						<label for="stu_num">Student Number</label>
+						{{ my_user_register_form.stu_num|attr:'class:form-control' }}
+					</div>
+				</fieldset>
+				<hr />
+				<fieldset>
+				<h3>Account Information</h3>
+					<div class="form-group">
+						<label for="username">ID</label>
+						{{ user_register_form.username|attr:'class:form-control' }}
+						{% if 'username' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<label for="nickname">Nickname</label>
+						{{ my_user_register_form.nickname|attr:'class:form-control' }}
+						{% if 'nickname' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<label for="password1">Password</label>
+						{{ user_register_form.password1|attr:'class:form-control' }}
+						{% if 'password1' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<label for="password2">Confirm Password</label>
+						{{ user_register_form.password2|attr:'class:form-control' }}
+						{% if 'password2' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+				</fieldset>
+				<hr />
+				<fieldset>
+				<h3>Additional Information</h3>
+					<div class="form-group">
+						<label for="birthday">Birthday</label>
+						<p style="color:gray;">(ex: 950101)</p>
+						{{ my_user_register_form.birthday|attr:'class:form-control'|attr:'maxlength:6' }}
+						{% if 'birthday' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<label for="phone_num">Phone Number</label>
+						<p style="color:gray;">(ex: 01012345678)</p>
+						{{ my_user_register_form.phone_num|attr:'class:form-control'|attr:'maxlength:11' }}
+						{% if 'phone_num' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+					<div class="form-group">
+						<label for="email">Email Address</label>
+						{{ user_register_form.email|attr:'class:form-control' }}
+						{% if 'email' in error_dict %}
+							<p style="color:red;">{{ warning }}</p>
+						{% endif %}
+					</div>
+				</fieldset>
+				<hr />
+				<button type="submit" class="btn btn-default" name="create_account">Create Account</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% endblock %}

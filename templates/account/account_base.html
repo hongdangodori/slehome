@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+
+{% block header %}
+	<link href="{% static "mycss/account.css" %}" rel="stylesheet" />
+	{% block account_header %}
+	{% endblock %}
+{% endblock %}
+
+{% block content %}
+
+	<div class="col-md-3">
+		{% include "account/account_menu.html" %}
+	</div>
+	<div class="col-md-9">
+		{% block account_content %}
+		{% endblock %}
+	</div>
+
+{% endblock %}

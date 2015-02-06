@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+<!-- wiki 기본 base -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -9,6 +9,8 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
+        <link href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css" rel="stylesheet" />
+
         <!-- Bootstrap core CSS -->
         <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
 
@@ -17,6 +19,13 @@
         <title>wiki page | {% block title %}{% endblock %}</title>
         <script src="{% static "bootstrap/js/jquery.js" %}"></script>
         <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+        <script src="{% static "myjs/wiki.js" %}"></script>
+
+       <!-- <script type="text/javascript" src="{% static "bootstrap-filestyle/bootstrap-filestyle.min.js" %}"> </script>-->
+        <script src="{% static "jcop/js/jquery.Jcrop.min.js" %}"></script>
+        <link href="{% static "jcop/css/jquery.Jcrop.css" %}" rel="stylesheet" />
+
+        <link href="{% static "mycss/font.css" %}" rel="stylesheet" />
     </head>
     <body>
         {% if user.is_authenticated %}
@@ -30,7 +39,7 @@
             </div>
         {% else %}
            <script type="text/javascript">
-               // window.alert("로그인을 하시고 이용해주세요.");
+                alert("로그인을 하시고 이용해주세요.");
                 location.replace("/sle/"); 
             </script>
 

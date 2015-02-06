@@ -1,0 +1,53 @@
+<!-- comment section -->
+
+<form role="form" class="form-inline" id="form-com-id" onsubmit="return false;" action="." method="POST">{% csrf_token %}
+	<div class="form-group">
+
+		<input type="text" class="form-control" id="idcomment" placeholder="Leave your comment.">
+	</div>
+
+		<button type="submit" class="btn btn-default" id="btn-comment-submit">Submit</button>
+
+</form>
+<br><br>
+<div class="comments-group">
+	<div id="com-start" class="panel-heading">자유로운 댓글</div>
+	{% if commentList %}
+		{% for c in commentList %}
+			<div class="col-xs-12 col-sm-6 col-md-4">
+			<div class="{% cycle 'box1' 'box2' 'box3' 'box4' 'box5' %}">
+			<div class="boxbox">
+				<div class="com-user">
+					<p>작성자: {{c.user.myuser}}
+					<button onclick=deleteCom()>&times;</button>
+					</p>
+				</div>
+				<div class="com-content ellipsis">
+					<p>{{c.comments}}</p>
+				</div>
+				<div class="com-date"
+					<p>{{c.pub_date}}</p>
+				</div>
+			</div>
+			</div>
+			</div>
+
+		{% endfor %}
+	{% endif %}
+</div>
+
+<script>
+function checkOverflow(el)
+{
+   var curOverflow = el.style.overflow;
+   if ( !curOverflow || curOverflow === "visible" )
+      el.style.overflow = "hidden";
+
+   var isOverflowing = el.clientWidth < el.scrollWidth 
+      || el.clientHeight < el.scrollHeight;
+
+   el.style.overflow = curOverflow;
+
+   return isOverflowing;
+}
+</script>

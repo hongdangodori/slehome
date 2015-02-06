@@ -1,49 +1,196 @@
 {% extends "base.html" %}
-
+<!-- member 정보를 보여주기 위한 템플릿 -->
 {% block content %}
-<div class="panel-group" id="accordion">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-          Collapsible Group Item #1
-        </a>
-      </h4>
-    </div>
-    <div id="collapseOne" class="panel-collapse collapse in">
-      <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+	function mk_modal(member_id){
+
+		$.ajax({
+			 url : "/sle/members/mk_modal/",
+	        type : "POST",
+	        data : {
+	          username : member_id,
+	          csrfmiddlewaretoken : '{{csrf_token}}',
+	        },
+	        dataType : "json",
+	        success : function(data) {
+	          if(data.alert != ""){
+	          	alert(data.name);
+	          }else{
+	          	$("#member_name").html('<b>'+data.name+'</b>');
+	          	$("#member_intro").html(data.member_intro);
+	          	$("#member_level").html('레벨 : '+data.level);
+	          	$("#prof_photo").attr("src",data.photo_link);
+	          	$("#birthday").html("생일 : "+data.birthday);
+	          	$("#phone_num").html("전화번호 : "+data.phone_num);
+	          	var stat_content="";
+	          	var i=0;
+	          	for(i=0;i<data.stat_list.length;i++){
+	          		stat_content += '<div class="row" style="padding-top:2%" >'+
+	          						'<div class="col-md-4"><label>'+data.stat_list[i].stat_name+'</label>'+'</div>'+
+									'<div class="col-md-8" >'+
+										'<div class="progress">'+
+									 		'<div class="progress-bar progress-bar-'+data.stat_list[i].bar_type+'" role="progressbar" aria-valuenow="" aria-valuemin="'+data.stat_list[i].stat_value+'" aria-valuemax="10" style="width: '+data.stat_list[i].stat_value+'0%;height:100%" >'+
+									 			data.stat_list[i].stat_value+
+									 			'</div>'+
+										'</div>'+
+									'</div>'+
+								'</div>';
+	          	}
+	          	$("#member_stat").html(stat_content);
+	          }
+	        },
+	        failure : function(data) {
+	          alert('fail!');
+	        },
+		});
+	}
+
+</script>
+<!-- 본문 -->
+	<div class="container">
+	<div class="col-md-1">
+		<div>
+			<div class="list-group" id="sidebar" data-spy="affix" data-offset-top="0">
+			  {% for menu in member_sort_list %}
+			  			<a href="/sle/members/{{page_number}}/{{menu.num}}" class="list-group-item 
+				  		{% if menu.num in sort_type %}
+				  			active
+				  		{% endif %}
+				  		">
+				  		{{menu.value}}
+				  		</a>
+				{% endfor %}
+			  </a>  
+			</div>
+		</div>
+	</div>
+	<div class="col-md-11">
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div style="display:in-line;">
+			{% for member in member_list %}	
+				<div class="col-md-4">
+					<a class="thumbnail" href="#memberModal" onclick="mk_modal('{{member.name}}')" data-toggle="modal"  style="position:relative;width:210px;height:210px;display:block;">
+						<div  style="position:relative;width:200px;height:200px;text-align:center;line-height:185px">
+							<img src="{{member.photo_link.upload_path}}{{member.photo_link.file_name}}" alt="" style="max-height:100%;max-width:100%;vertical-align:middle">
+						</div>
+					</a>			
+				</div>
+			{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- pagination -->
+	<nav style="text-align:center;">
+  <ul class="pagination">
+  {% if prev_page < 1 %}
+    <li class="disabled">
+      <a href="" aria-label="Previous" class="not-active">
+  {% else %}
+    <li>
+      <a href="/sle/members/{{prev_page}}/{{sort_type}}" aria-label="Previous">
+  {% endif %}
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+  {% for page in page_list %}
+    {% if page == page_number %}
+    <li class="active"><a href="/sle/members/{{page}}/{{sort_type}}">{{page}}</a></li>
+    {% else %}
+    <li><a href="/sle/members/{{page}}/{{sort_type}}">{{page}}</a></li>
+    {% endif %}
+  {% endfor %}
+  {% if next_page > total_page %}
+    <li class="disabled">
+      <a href="" aria-label="Next" class="not-active">
+  {% else %}
+    <li>
+      <a href="/sle/members/{{next_page}}/{{sort_type}}" aria-label="Next">
+  {% endif %}
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+
+<!-- modal -->
+
+<div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true" >
+  <div class="modal-dialog" style="width:760px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="photoModalLabel">회원 정보</h4>
       </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-          Collapsible Group Item #2
-        </a>
-      </h4>
-    </div>
-    <div id="collapseTwo" class="panel-collapse collapse">
-      <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+      <div class="modal-body" >
+		      	<div class="row">
+					<div class="col-md-3 ">
+						<div  style="margin-left:20%;position:relative;width:250px;height:250px;text-align:center;line-height:185px">
+							<img id="prof_photo" src="" alt="" style="max-height:100%;max-width:100%;vertical-align:middle">
+						</div>
+					</div>
+					<div class="col-md-6 col-md-offset-2">
+						<div class="row">
+							<div class="col-md-5">
+					 			<font id="member_name" style="font-size:38px;"></font>
+					 		</div>
+					 		<div class="col-md-7">
+					 			<br/>
+					 			<p id="member_level" style="font-size:15px;text-align:right"></p>
+					 		</div>
+					 	</div>
+					 	<div id="member_stat" style="text-align:left;">
+						</div>	
+					</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-10 col-md-offset-1">
+						<div class="row">
+							<div class="col-md-1">
+								EXP 
+							</div>
+							<div class="col-md-11">
+							 	<div class="progress">
+							 		<div class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="600" aria-valuemax="1000" style="width: 60%;height:100%" >
+							 			600
+							  		</div>
+								</div>
+							</div>
+						</div>
+				 	</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-5 col-md-offset-1">
+						<p id="birthday"> 
+
+						</p>
+					</div>
+					<div class="col-md-6">
+						<p id="phone_num">
+						</p>
+					</div>
+				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-10 col-md-offset-1">
+					 	<p id="member_intro">{{member.member_intro}}</p>
+					 	</p>
+				 	</div>
+				</div>
+	  	</div>
+	   <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">
-        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-          Collapsible Group Item #3
-        </a>
-      </h4>
-    </div>
-    <div id="collapseThree" class="panel-collapse collapse">
-      <div class="panel-body">
-        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-      </div>
+	  </div>
+     </div>
     </div>
   </div>
 </div>
-
 {% endblock %}

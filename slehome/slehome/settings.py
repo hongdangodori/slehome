@@ -41,12 +41,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'widget_tweaks',
     'account',
-    'navbar',
+    'main',
     'members',
     'wiki',
-    'freeboards',
     'photo',
-    'exception',
+    'freeboards',
+    'infoboards',
+    'imagecrop',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -104,3 +105,6 @@ MEDIA_ROOT = '/home/sle/media/'
 LOGIN_REDIRECT_URL = '/sle/'
 LOGIN_URL = '/sle/'
 LOGOUT_URL = '/sle/'
+
+# for serializer
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

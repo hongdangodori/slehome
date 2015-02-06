@@ -9,9 +9,23 @@
     <title>{{ title }}</title>
 
     <!-- Bootstrap -->
+    <link href="http://fonts.googleapis.com/earlyaccess/nanumgothic.css" rel="stylesheet" />
     <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+    
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    
+    <link href="{% static "mycss/sle.css" %}" rel="stylesheet" />
+    <link href="{% static "mycss/font.css" %}" rel="stylesheet" />
+
+    <script type="text/javascript" src="{% static "bootstrap-filestyle/bootstrap-filestyle.min.js" %}"> </script>
+    <script src="{% static "jcop/js/jquery.Jcrop.min.js" %}"></script>
+    <link href="{% static "jcop/css/jquery.Jcrop.css" %}" rel="stylesheet" />
+    <!-- <script src="{% static "dropzone/js/dropzone.js" %}"></script>-->
+  
+    {% block header %}
+    {% endblock %}
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -24,6 +38,9 @@
     <div id="navbar">
     	{% include "navbar/navbar.html" %}
     </div>
+
+    {% block main_content %}
+    {% endblock %}
 
     <div class="container">
       <div id="content">

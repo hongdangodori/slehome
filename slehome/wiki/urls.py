@@ -3,7 +3,6 @@ from wiki import views
 
 urlpatterns = patterns('',
     url(r'^$', views.view_page),
-    url(r'^instagram/$', views.instagram_example),
     url(r'^search/$', views.search_page),
     url(r'^page/(?P<page_name>[^/]+)/$', views.view_page),
     url(r'^edit/(?P<page_name>[^/]+)/(?P<section>[^/]+)/$', views.edit_page),

@@ -1,14 +1,32 @@
 {% extends "base.html" %}
-{% block title %} Freeboards {% endblock %}
+{% block header %} 
+<script type="text/javascript">
+    $(document).ready(function(){
+        var wid = $(document).width();
+        $('#test').text(wid);
+        if(wid < 900) {
+            document.getElementById('computer-table').style.display="none";
+            document.getElementById('mobile-table').style.display="table";
+        } else {
+            document.getElementById('computer-table').style.display="table";
+            document.getElementById('mobile-table').style.display="none";
+        }
+    });
+</script>
+{% endblock %}
+
+
+
 {% block content %}
-<table class="table" cellspacing="1" width="700px" border="0">
+<table class="table" width=700>
     <tr>
         <td>Total writings: {{ totalCnt }}</td>
         <td><p align=right> Page:{{ currentPage }}</td>
     </tr>
 </table>
 
-<table class="table table-hover" cellspacing="1" width="700px" border="1">
+<div class"col-md-12">
+<table class="table table-hover" id="computer-table" width=700 >
     <thead>
     <tr>
         <th width=50><p align=center>No.</p></th>
@@ -21,7 +39,7 @@
     </thead>
     <tbody>
     {% if boardList %}
-      
+        <ul>
             {% for boardRow in boardList %}
             <tr>
             <td width=50><p align=center>{{ boardRow.id }}</p></td>
@@ -31,20 +49,52 @@
                     <a href="/sle/freeboards/viewWork?writing_id={{ boardRow.id }}&currentPage={{ currentPage }}&searchStr=None" title="{{ boardRow.contents }}">{{ boardRow.title }}
                 </p>
             </td>
-            <td width=80><p align=center>{{ boardRow.user }}</p></td>
+            <td width=80><p align=center>{{ boardRow.user.myuser }}</p></td>
             <td width=80><p align=center>{{ boardRow.pub_date }}</p></td>
             <td width=80><p align=center>{{ boardRow.hits }}</p></td>
             </tr>
             {% endfor %}
-        
+        </ul>
     {% else %}
         <p></p>
     {% endif %}
     </tbody>
 </table>
+</div>
 
-<table class="table" cellspacing="1" width="700px" border="1" >
-    <tr> <td>
+
+<div class="col-xs-12">
+<table class="table-striped" id="mobile-table" width="100%">
+<thead>
+    <tr>
+        <th><p align=center><Category>Title</p></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if boardList %}
+        <ul>
+            {% for boardRow in boardList %}
+            <tr>
+            <td>
+                <p align=left>
+                    <a href="/sle/freeboards/viewWork?writing_id={{ boardRow.id }}&currentPage={{ currentPage }}&searchStr=None" title="{{ boardRow.contents }}"><small><{{boardRow.category}}></small> {{ boardRow.title }}</a><br><small>{{ boardRow.user.myuser }}, {{ boardRow.hits }} views</small>
+                </p>
+            </td>
+            </tr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p></p>
+    {% endif %}
+    </tbody>
+</table>
+</div>
+
+<table class="table" width=700>
+    <tr>
+        <td style="text-align:center">
+        <a herf="/sle/freeboards/listSpecificPageWork?currentPage=1" ><<</a>&emsp;
+        <a herf="/sle/freeboards/listSpecificPageWork?currentPage={{page}}" ><</a>&emsp;
         {% for page in totalPageList %}
             <a href="/sle/freeboards/listSpecificPageWork?currentPage={{page}}" >
                 [
@@ -56,16 +106,20 @@
                         </b>
                     {% endif %}
                     
-                ]                
+                ]
+            </a>                
         {% endfor %}
-        </td> </tr>
+        &emsp;<a herf="/sle/freeboards/listSpecificPageWork?currentPage={{page}}" >></a>
+        &emsp;<a herf="/sle/freeboards/listSpecificPageWork?currentPage={{lastPage}}" >>></a></td>
+    </tr>
 </table>
 
-<table class="table" width="700px">
+<table class="table" width=700>
     <tr>
         <td><input type=button value="Write" class="btn btn-default" role="button" OnClick="window.location='/sle/freeboards/showWriteForm'">    </td>
         
-        <td><form class="form-inline" name=searchf method=post action="/sle/freeboards/searchWithSubject/">
+        <td>
+            <form class="form-inline" name=searchf method=post action="/sle/freeboards/searchWithSubject/">
             <p align=right>
             <input type=text class="form-control" name=searchStr maxlength=50  style="display:inline;">
             <input type=submit class="btn btn-default" role="button" value="Search" style="display:inline;">
@@ -74,5 +128,6 @@
         </td>
     </tr>
 </table>
+<p id="test">test</p>
 
 {% endblock %}

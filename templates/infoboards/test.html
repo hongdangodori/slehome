@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript">
+	 $(document).ready(function(){
+	  $('#btn').click(function(){
+	   $.ajax({
+	    url : '/sle/infoboards/test2/',
+	    data : {name:'name1', age:'27'},
+	    
+	    success:function(data){
+	        $('body').append(data);
+
+	        var node = document.createElement('div');
+	        node.className = 't2';
+
+	        var pfornode = document.createElement('p');
+	        var textnode = document.createTextNode("testtesttest");
+	        pfornode.appendChild(textnode);
+
+	        var pfornode2 = document.createElement('p');
+	        var textnode2 = document.createTextNode("node2 div test");
+	        pfornode2.appendChild(textnode2);
+
+	        node.appendChild(pfornode);
+	        node.appendChild(pfornode2);
+
+
+	        t3 = document.getElementsByClassName('t3');
+	        t3[0].appendChild(node);
+
+	    }
+	   });
+	  });
+	 });
+	</script>
+
+<input type="button" value="클릭" id="btn">
+
+{% endblock %}
+{# 
+var newUser = document.createElement("p");
+              // newUser.class="com-user";
+              $('.newUser').text(data.user);
+
+              var newComments = document.createElement("p");
+              // newComments.class="com-content";
+              $('.newComments').text(data.comments);
+
+              var newDate = document.createElement("p");
+              // newDate.class="com-date";
+              $('.newDate').text(data.pub_date);
+
+              document.getElementsByClassName("comment-group").innerHTML += newUser;
+              document.getElementsByClassName("comment-group").innerHTML += newComments;
+              document.getElementsByClassName("comment-group").innerHTML += newDate;
+              // newDiv.appendChild(newUser);
+              // newDiv.appendChild(newComments);
+              // newDiv.appendChild(newDate);
+              // document.body.appendChild(newDiv); #}

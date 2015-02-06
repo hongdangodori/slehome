@@ -2,19 +2,19 @@
 
 {% block content %}
 
-<table class="table" width=700 border=1 cellspacing=0 cellpadding=5>
+<table class="table" width=700>
   <form name="writeform" method=post action="/sle/freeboards/doWriteBoard/">
-  	<tr><td><b>Name</b></td><td>{{name}}</td></tr>
-  	<tr><td><b>Category</b></td><td><input type="text" name="category" size=50  maxlength=50></td></tr>
-  	<tr><td><b>Title</b></td><td><input type="text" name="title" size=50  maxlength=50></td></tr>
-  	<tr><td><b>Contents</b></td><td><textarea name="contents" cols=50 rows=10></textarea></td></tr>
+  	<tr><td><b>Name</b></td><td>{{user_nickname.myuser}}</td></tr>
+  	<tr><td><b>Category</b></td><td><input type="text" class="form-control" name="category" size=50  maxlength=50></td></tr>
+  	<tr><td><b>Title</b></td><td><input type="text" class="form-control" name="title" size=50  maxlength=50></td></tr>
+  	<tr><td><b>Contents</b></td><td><textarea class="form-control" name="contents" rows=10></textarea></td></tr>
   </form>
 </table>
 
-<table class"table" border=1 cellspacing=0 cellpadding=0>
+<table class="form-inline">
 <tr><td>
-  <input type="submit" value="Write" OnClick="javascript:writeCheck();">
-  <input type="submit" value="Cancle" OnClick="javascript:cancleCheck();">
+  <input type="submit" class="btn btn-default" value="Submit" OnClick="javascript:writeCheck();">
+  <input type="submit" class="btn btn-default" value="Cancle" OnClick="javascript:cancleCheck();">
 </td></tr>
 </table>
 

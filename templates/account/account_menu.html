@@ -1,0 +1,25 @@
+<div>
+	<div class="list-group" id="sidebar" data-spy="affix" data-offset-top="0">
+	  {% for menu in account_menu_list %}
+	  	{% if menu.display == True %}
+	  		{% with "/sle/account/"|add:menu.link.lower as menu_path %}
+	  			{% if menu.menu == "Account Settings" or menu.menu == "My Articles" or menu.menu == "Delete Account" %}
+					<li class="list-group-item" style="height:1px;background-color:#e7e7e7;padding:1px;"></li>
+	  			{% endif %}
+	  			<a href="{{ account_base_path }}{{ menu.link }}" class="list-group-item 
+		  		{% if menu_path in current_path and not menu.link == "" or menu_path == current_path %}
+		  			active
+		  		{% endif %}
+		  		">
+		  		{% if menu.menu == "Account" %}
+		  			<strong>Welcome, {{ nickname }}!</strong>
+		  		{% else %}
+		  			{{ menu }}
+		  		{% endif %}
+		  		</a>
+		  	{% endwith %}
+			{% endif %}
+		{% endfor %}
+	  </a>  
+	</div>
+</div>

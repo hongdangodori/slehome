@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+<!-- member 정보를 보여주기 위한 템플릿 -->
+{% block content %}
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+	<div class="container">
+	<div class="col-md-1">
+		<div>
+			<div class="list-group" id="sidebar" data-spy="affix" data-offset-top="0">
+			  {% for menu in member_sort_list %}
+			  			<a href="/sle/members/{{page_number}}/{{menu.num}}" class="list-group-item 
+				  		{% if menu.num in sort_type %}
+				  			active
+				  		{% endif %}
+				  		">
+				  		{{menu.value}}
+				  		</a>
+				{% endfor %}
+			  </a>  
+			</div>
+		</div>
+	</div>
+	<div class="col-md-11">
+			{% for member in member_list %}
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<div class="row thumbnail" >
+					<div class="col-md-3">
+						<div  style="position:relative;width:200px;height:200px;text-align:center;line-height:185px">
+								<img src="{{member.photo_link.upload_path}}{{member.photo_link.file_name}}" alt="" style="max-height:100%;max-width:100%;vertical-align:middle">
+						</div>
+					</div>
+					 <div class="col-md-4">
+					 	<p><h2><b>{{member.name}}</b></h2>
+					 	<p>{{member.member_intro}}</p>
+					 	</p>
+					 </div>
+					<div class="col-md-5" style="text-align:left;vertical-align:center;">
+					{% for stat_element in member.stat_list %}
+					<div class="row" style="padding-top:2%" >
+								<div class="col-md-4">
+									<label>{{stat_element.stat.stat_name}}</label>
+								</div>
+								<div class="col-md-8" >
+									<div class="progress">
+								 		<div class="progress-bar progress-bar-{{stat_element.bar_type}}" role="progressbar" aria-valuenow="" aria-valuemin="{{stat_element.stat.stat_value}}" aria-valuemax="10" style="width: {{stat_element.stat.stat_value}}0%;height:100%" >
+								 			{{stat_element.stat.stat_value}}
+								  		</div>
+									</div>
+								</div>
+							</div>
+					<!-- 	{{stat_element.stat_name}}
+						{{stat_element.stat_value}}-->
+					 {% endfor %}
+					 </div>
+					</div>
+				 </div>
+			</div>
+			{% endfor %}
+	</div>
+</div>
+	<nav style="text-align:center;">
+  <ul class="pagination">
+  {% if prev_page < 1 %}
+    <li class="disabled">
+      <a href="" aria-label="Previous" class="not-active">
+  {% else %}
+    <li>
+      <a href="/sle/members/{{prev_page}}/{{sort_type}}" aria-label="Previous">
+  {% endif %}
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+  {% for page in page_list %}
+    {% if page == page_number %}
+    <li class="active"><a href="/sle/members/{{page}}/{{sort_type}}">{{page}}</a></li>
+    {% else %}
+    <li><a href="/sle/members/{{page}}/{{sort_type}}">{{page}}</a></li>
+    {% endif %}
+  {% endfor %}
+  {% if next_page > total_page %}
+    <li class="disabled">
+      <a href="" aria-label="Next" class="not-active">
+  {% else %}
+    <li>
+      <a href="/sle/members/{{next_page}}/{{sort_type}}" aria-label="Next">
+  {% endif %}
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+{% endblock %}

@@ -1,0 +1,555 @@
+{% extends "account/account_base.html" %}
+{% load widget_tweaks %}
+
+{% block account_header %}
+<script type="text/javascript">
+	var is_send=false;
+	$(document).ready(function() {
+		$("#form_intro").submit(function() {
+			var ajax_intro = $('#id_intro').val();
+			$.ajax({
+				url: '/sle/account/edit_introduction/save_intro/',
+				type: 'POST',
+				data: {
+					introduction: ajax_intro,
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+				},
+				dataType: 'json',
+				success: function(data) {
+					alert(data.message);
+				},
+				failure: function(data) {
+					alert('fail');
+				},
+			});
+		});
+	});
+
+	$(document).ready(function() {
+		$("#form_stat").submit(function() {
+			for (var i = 0; i < 4; i++) {
+				var show_alert = true;
+				var id = i.toString();
+				
+				var stat_name_id = "stat_name_" + id;
+				var stat_value_id = "stat_value_" + id;
+
+				var ajax_stat_name = $('#' + stat_name_id).val();
+				var ajax_stat_value = $('#' + stat_value_id).val();
+
+				$.ajax({
+					url: '/sle/account/edit_introduction/save_stat/',
+					type: 'POST',
+					data: {
+						stat_num: i,
+						stat_name: ajax_stat_name,
+						stat_value: ajax_stat_value,
+						stat_list: '{{ stat_list|escapejs }}',
+						csrfmiddlewaretoken: '{{ csrf_token }}',
+					},
+					dataType: 'json',
+					success: function(data) {
+						//if (data.n == 3) {
+							alert(data.message);
+						//}
+					},
+					failure: function(data) {
+						alert('fail');
+		     		},
+				});
+			}
+		});
+	});
+	$(document).ready(function(){
+		$("#edit_profile_img").hover(
+			function(){
+				$('#image_update').css('visibility','visible');
+			},
+			function(){
+				$('#image_update').css('visibility','hidden');
+			}
+		);
+		
+   		$("#edit_profile_img").click(function(){
+   			 $("#crop_btn").css("visibility","hidden");
+   			if($("#croptarget").attr("src") != "" && is_send == false){
+			$.ajax({
+					url: '/sle/imagecrop/del_photo/',
+					type: 'POST',
+					dataType:'text',
+					data: {
+						'csrfmiddlewaretoken':'{{csrf_token}}',
+						'photo_name':$("#croptarget").attr("src"),
+					},
+					success: function(data) {
+					},
+			});
+   			var obj = $("#dragandrophandler");
+   			obj.html('<form method="post" id="img_upload_form" name="img_upload_form">'+
+      			"{% csrf_token %}"+
+      			'<div id="dragnotice">'+
+      			'<input type="file" name="file" id="img_upload"/>'+
+      			'</div>'+
+      		'</form>'+
+      		'<img src="" id="croptarget"/>');
+      		
+			}
+			jQuery('#x1').val("");
+			jQuery('#y1').val("");
+			jQuery('#w').val("");
+			jQuery('#h').val("");
+			$("#img_upload").on('change',function (){
+				if(~this.files[0].type.indexOf("image")){
+					if(this.files[0].size >  2000000){alert("2mb이상의 파일을 올릴 수 없습니다.");}
+					else{
+						var fd = new FormData(document.forms.namedItem("img_upload_form"));
+						fd.append('csrfmiddlewaretoken','{{csrf_token}}');
+						var obj = $("#dragandrophandler");
+			  			
+						sendFileToServer(fd);
+					}
+				}else{
+					alert("이미지 파일을 올려주세요.");
+				}
+			});
+   			
+   		});
+   		
+	});
+	
+	
+	$(window).on("beforeunload", function(){
+		if($("#croptarget").attr("src") != "" && is_send == false){
+			$.ajax({
+					url: '/sle/imagecrop/del_photo/',
+					type: 'POST',
+					dataType:'text',
+					data: {
+						'csrfmiddlewaretoken':'{{csrf_token}}',
+						'photo_name':$("#croptarget").attr("src"),
+					},
+					success: function(data) {
+					},
+			});
+		}
+		
+    });
+	// $(document).unload( function () {
+	// 	
+	// });
+
+
+  function sendFileToServer(formData)
+  {
+    var uploadURL ="/sle/imagecrop/"; //Upload URL
+    var extraData ={}; //Extra Data.
+    var jqXHR=$.ajax({
+            xhr: function() {
+              var xhrobj = $.ajaxSettings.xhr();
+              if (xhrobj.upload) {
+                      xhrobj.upload.addEventListener('progress', function(event) {
+                          var percent = 0;
+                          var position = event.loaded || event.position;
+                          var total = event.total;
+                          if (event.lengthComputable) {
+                              percent = Math.ceil(position / total * 100);
+                          }
+                          //Set progress
+                      }, false);
+                  }
+              return xhrobj;
+          },
+          url: uploadURL,
+          type: "POST",
+	      contentType:false,
+	      processData: false,
+          cache: false,
+          data: formData,
+          success: function(data){
+            $("#dragnotice").remove();
+            $('#image_path').attr("value",data);
+            $("#croptarget").attr("src",data);
+            $("#croptarget").css("visibility","");
+            $("#croptarget").css("display","");
+            $("#croptarget").css("width","100%");
+            $("#croptarget").css("height","auto");
+            $("#croptarget").Jcrop({
+				onSelect: showCoords,
+				// onChange: showCoords,
+				aspectRatio: 1
+			});
+            $("#crop_btn").css("visibility","");
+            $(".jcrop-keymgr").css("visibility","hidden");
+            // $("#status1").append("Data from Server:"+data+"<br>");          
+      }
+      }); 
+	
+  }
+
+  var rowCount=0;
+  
+  function handleFileUpload(files,obj)
+  {
+  	var fd = new FormData();
+  	if(~files[0].type.indexOf('image')){
+  		if(files[0].size > 2000000){alert("2mb이상의 파일을 올릴 수 없습니다.");}
+  		else{
+	  	fd.append('csrfmiddlewaretoken','{{csrf_token}}')
+	    fd.append('file', files[0]);
+	  	
+	  
+	    sendFileToServer(fd);
+		}
+	}else{
+		alert("이미지 파일을 올려주세요.");
+	}
+  }
+  $(document).ready(function()
+    {
+    var obj = $("#dragandrophandler");
+    
+	$("#crop_form").submit(function(){ //문서의 모든 form이 submit될때
+        if($('#x1').val() =="" || $('#y1').val() =="" || $('#w').val() =="" || $('#h').val() =="" ){ // id가 id인 요소의 vlue 또는 id가 password인 value가 없다면
+            alert('프로필 사진으로 쓰고 싶은 범위를 지정해주세요.'); // password라고 경고
+            return false; // 폼은 전송시키지않고 false반환
+    	}else{
+    		is_send = true;
+    		return true;
+    	}
+	});
+    obj.on('dragenter', function (e) 
+    {
+      e.stopPropagation();
+      e.preventDefault();
+      $(this).css('border', '2px solid #0B85A1');
+    });
+    
+    obj.on('dragover', function (e) 
+    {
+       e.stopPropagation();
+       e.preventDefault();
+    });
+    
+    obj.on('drop', function (e) 
+    {
+      
+       $(this).css('border', '2px dotted #0B85A1');
+       e.preventDefault();
+       var files = e.originalEvent.dataTransfer.files;
+       if($("#croptarget").attr("src") != "" && is_send == false){
+       	$.ajax({
+					url: '/sle/imagecrop/del_photo/',
+					type: 'POST',
+					dataType:'text',
+					data: {
+						'csrfmiddlewaretoken':'{{csrf_token}}',
+						'photo_name':$("#croptarget").attr("src"),
+					},
+					success: function(data) {
+					},
+		});
+        obj.html('<form method="post" id="img_upload_form" name="img_upload_form">'+
+			      			"{% csrf_token %}"+
+			      			'<div id="dragnotice">'+
+			      			'<input type="file" name="file" id="img_upload"/>'+
+			      			'</div>'+
+			      		'</form>'+
+			      		'<img src="" id="croptarget"/>');
+        	jQuery('#x1').val("");
+			jQuery('#y1').val("");
+			jQuery('#w').val("");
+			jQuery('#h').val("");
+   		}
+       //We need to send dropped files to Server
+       handleFileUpload(files,obj);
+    });
+
+
+    $(document).on('dragenter', function (e) 
+    {
+      e.stopPropagation();
+      e.preventDefault();
+    });
+    
+    $(document).on('dragover', function (e) 
+    {
+      e.stopPropagation();
+      e.preventDefault();
+      obj.css('border', '2px dotted #0B85A1');
+    });
+    
+    $(document).on('drop', function (e) 
+    {
+      e.stopPropagation();
+      e.preventDefault();
+    });
+
+  	});
+	
+
+
+	jQuery(function($){
+			$('#croptarget')
+		});
+
+ 		function showCoords(c){
+			var rx=100/c.w;
+			var ry=100/c.h;
+
+			$('#preview').css({
+				width: Math.round(rx*300) + 'px',
+				height: Math.round(ry * 200) + 'px',
+				marginLeft: '-'+Math.round(rx * c.x)+'px',
+				marginTop: '-'+Math.round(rx * c.y)+'px'
+			});
+
+			jQuery('#x1').val(c.x);
+			jQuery('#y1').val(c.y);
+			jQuery('#w').val(c.w);
+			jQuery('#h').val(c.h);
+		};
+</script>
+<style type="text/css">
+	.modal-body{
+		text-align: justify;
+	}
+  #dragandrophandler {
+	    border:2px dotted #0B85A1;
+	    width:100%;
+	    height:auto;
+	    color:#92AAB0;
+	    text-align:center;vertical-align:middle;
+	    padding:10px 10px 10 10px;
+	    /*margin-bottom:10px;*/
+	    font-size:200%;
+
+	  }
+	  .progressBar {
+	    width: 200px;
+	    height: 22px;
+	    border: 1px solid #ddd;
+	    border-radius: 5px; 
+	    overflow: hidden;
+	    display:inline-block;
+	    margin:0px 10px 5px 5px;
+	    vertical-align:top;
+	}
+	 
+	.progressBar div {
+	    height: 100%;
+	    color: #fff;
+	    text-align: right;
+	    line-height: 22px; /* same as #progressBar height if we want text middle aligned */
+	    width: 0;
+	    background-color: #0ba1b5; border-radius: 3px; 
+	}
+	.statusbar
+	{
+	    border-top:1px solid #A9CCD1;
+	    min-height:25px;
+	    width:700px;
+	    padding:10px 10px 0px 10px;
+	    vertical-align:top;
+	}
+	.statusbar:nth-child(odd){
+	    background:#EBEFF0;
+	}
+	.filename
+	{
+		display:inline-block;
+		vertical-align:top;
+		width:250px;
+	}
+	.filesize
+	{
+		display:inline-block;
+		vertical-align:top;
+		color:#30693D;
+		width:100px;
+		margin-left:10px;
+		margin-right:5px;
+	}
+	.abort{
+	    background-color:#A8352F;
+	    -moz-border-radius:4px;
+	    -webkit-border-radius:4px;
+	    border-radius:4px;display:inline-block;
+	    color:#fff;
+	    font-family:arial;font-size:13px;font-weight:normal;
+	    padding:4px 15px;
+	    cursor:pointer;
+	    vertical-align:top
+    }
+	.thumbnail:hover{
+		text-decoration: none;
+	}
+	#image_update{
+		position:relative;
+		width: 260px;
+		height: 60px;
+		left: -5px;
+		top:-100px;
+		color: white;
+		text-align: center;
+		vertical-align: middle;
+		background-color: rgba(0,0,0,0.5);
+		visibility: hidden;
+	}
+	#update_font{
+		color: white;
+		position: relative;
+		vertical-align: middle;
+		text-decoration: none;
+		font-weight: bold;
+	}
+	#img_upload{
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		display: block;
+		overflow:hidden;
+	}
+	#dragnotice{
+		width:100%;
+		height:300px;
+		background-position: center;
+		background-image: url(http://54.169.79.59/media/design/upload_photo.png);
+		overflow:hidden;
+	}
+	
+</style>
+{% endblock %}
+
+
+{% block account_content %}
+
+<div class="container">
+	<h1>{{ user.myuser.nickname }}'s Member Introduction</h1>
+</div>
+
+<div class="container" style="margin-bottom:3%;">
+	<div class="row">
+		<div class="col-lg-6">
+			<a href="#photoModal" class="thumbnail" id="edit_profile_img" style="width:260px;height:260px;text-align:center;vertical-align:middle;" data-toggle="modal">
+				<img src="{{photo_link.upload_path}}{{photo_link.file_name}}" style="max-width:250px;max-height:250px;position:relative;">
+				<div id="image_update">
+					<p id="update_font">
+						<br/>
+						사진을 업데이트 하고 싶으면 클릭
+					</p>
+				</div>
+			</a>
+			<hr />
+			<form class="form" accept-charset="UTF-8" action="." method="post" id="form_intro" onsubmit="return false;">{% csrf_token %}
+			<fieldset>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><div style="display:inline-block;width:50%;"><label for="intro">Introduction</label></div><div align="right;" style="display:inline-block;width:50%;text-align:right;"><button class="btn btn-default" id="button_intro">Save</button></div></h3>
+					</div>
+					<div class="panel-body" style="float:center;">
+						{{ member_intro_form.intro|attr:'class:form-control' }}
+					</div>
+				</div>
+			</fieldset>
+			</form>
+
+			<hr />{{testthing}}
+
+			<!-- <form class="form" accept-charset="UTF-8" action="." method="post">{% csrf_token %}
+			<fieldset>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><div style="display:inline-block;width:50%;"><label for="photo">Photo</label></div><div align="right;" style="display:inline-block;width:50%;text-align:right;"><button class="btn btn-default" value="Upload Photo">Upload Photo</button></div></h3>
+					</div>
+					<div class="panel-body">
+
+						<form  class="form-inline" action="/sle/wiki/upload/{{page_name}}/" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
+							<div class="form-group">
+								<input type="file" name="file" id="id_file" class="filestyle" data-buttonText="Find file" />
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</fieldset>
+			</form> -->
+
+			<hr />
+
+			<form class="form" accept-charset="UTF-8" action="." method="post" id="form_stat" onsubmit="return false;">{% csrf_token %}
+				<fieldset>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title"><div style="display:inline-block;width:50%;"><label for="stat">Stat</label></div><div align="right;" style="display:inline-block;width:50%;text-align:right;"><button class="btn btn-default" id="button_stat">Save</button></div></h3>
+						</div>
+
+				{% for item in stat_list %}
+					{% with item.num|stringformat:"s" as item_id %}
+					{% with "stat_name_"|add:item_id as item_stat_name %}
+					{% with "stat_value_"|add:item_id as item_stat_value %}
+						<div class="panel-body" style="padding:5%;">
+							<div class="panel-body">
+								<div class="pull-left" style="width:65%;">
+
+									{# STAT NAME #}
+									<input class="form-control" id="{{item_stat_name}}" maxlength="15" name="{{item_stat_name}}" type="text" value="{{item.stat.stat_name}}" placeholder="STAT NAME"/>
+
+								</div>
+								<div class="pull-right" style="width:25%;">
+
+									{# STAT VALUE #}
+									<input class="form-control" id="{{item_stat_value}}" type="number" name="{{item_stat_value}}" min="0" max="10" value="{{item.stat.stat_value}}" placeholder="VALUE"/>
+			
+								</div>
+							</div>
+
+						</div>
+						<hr />
+
+					{% endwith %}
+					{% endwith %}
+					{% endwith %}
+				{% endfor %}
+
+
+					</div>
+				</fieldset>
+			</form>	
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="photoModal" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel" aria-hidden="true" >
+  <div class="modal-dialog" style="width:598px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="photoModalLabel">upload photo</h4>
+      </div>
+      <div class="modal-body" >
+      	<div id="dragandrophandler">
+      		<form method="post" id="img_upload_form" name="img_upload_form">
+      			{% csrf_token %}
+      			<div id="dragnotice">
+      			<input type="file" name="file" id="img_upload"/>
+      			</div>
+      		</form>
+      		<img src="" id="croptarget"/> 		               
+	    </div>  
+	    <form method="post" action="/sle/imagecrop/test/" id="crop_form">{% csrf_token %}
+			<input type="submit" id="crop_btn" value="crop the image" style="visibility:hidden"/>
+			<input type="hidden" id="image_path" name="image_path"/>
+			<input type="hidden" size="4" id="x1" name="x1"/>
+			<input type="hidden" size="4" id="y1" name="y1"/>
+			<input type="hidden" size="4" id="w" name="w"/>
+			<input type="hidden" size="4" id="h" name="h"/>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

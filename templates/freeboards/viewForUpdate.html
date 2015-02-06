@@ -30,23 +30,23 @@
 	</script>
 
 
-	<table cellspacing = 0 cellpadding = 5 border = 1 width=500>
+	<table class="table" width=500>
 	<form name=modifyform method=post action="/sle/freeboards/updateBoard/">
 	    <input type=hidden name=writing_id  value="{{writing_id}}">
 	    <input type=hidden name=currentPage  value="{{currentPage}}">
 	    <input type=hidden name=searchStr  value="{{searchStr}} ">
 
-	    <tr><td><b>Name</b></td><td>{{ boardData.user }}<input type=hidden name=user size=50  maxlength=30 value="{{ boardData.user }}"></td><tr>
+	    <tr><td><b>Name</b></td><td>{{ boardData.user.myuser }}<input type=hidden name=user size=50  maxlength=30 value="{{ boardData.user }}"></td><tr>
 	    <tr><td><b>Category</b></td><td><input type=text name=category size=50  maxlength=50 value="{{ boardData.category }}"></td></tr>
 	    <tr><td><b>Title</b></td><td><input type=text name=title size=50  maxlength=50 value="{{ boardData.title }}"></td></tr>
 	    <tr><td><b>Contents</b></td><td><textarea name=contents cols=50 rows=10>{{ boardData.contents }}</textarea></td></tr>
 	</form>
 	</table>
 
-	<table  cellspacing = 0 cellpadding = 0 border = 0 width=500>
+	<table  class="table">
 	    <tr><td>
-	        <input type=button value="Confirm" OnClick="javascript:writeCheck();">
-	        <input type=button value="List" OnClick="javascript:boardlist()">
+	        <input type=button class="btn btn-default" value="Confirm" OnClick="javascript:writeCheck();">
+	        <input type=button class="btn btn-default" value="List" OnClick="javascript:boardlist()">
 	    </td></tr>
 	</table>
 {% endblock %}

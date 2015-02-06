@@ -1,64 +1,127 @@
 from django.shortcuts import render	#template로 넘어가는데 사용되는 메소드
-from django.core.context_processors import csrf	#form을 통해 data를 넘겨받을때 사용해야 하는 것
-from django.http import HttpResponseRedirect, HttpResponse #HttpResponse를 위해 사용
-from django.db.models import Q 	#django의 model에서 필요한 자료를 뽑아낼 때 사용됨 or나 and가 가능하게 해주는 기능
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
+import simplejson
+
+from datetime import datetime
 
 from navbar.shared import Navbar
-from instagram.client import InstagramAPI # instagram을 사용하기 위한 module 차후에 옮길 예정
-# Create your views here.
 
-def instagram_example(request):
-	# access_token = "YOUR_ACCESS_TOKEN"
-	# api = InstagramAPI(access_token="551091148.1118900.39c04ca10ec649a78f80d2bde2cb4aa1")
-	# recent_media, next_ = api.user_recent_media(user_id="hongdan009",count=10)
-	# c=[]
-	# for media in recent_media:
-	# 	c.append(media.caption.text)
+from account.models import MyUser
 
-	# s = '\n'.join(c)
-	# s=""
+from photo.models import Photos, PhotoComments
+from photo.getPhotos import Instagram
 
-	api = InstagramAPI(client_id='1118900683bb413993f5e374ac9ea021', client_secret='d20ea751a7be44adb41ac19d3ad6b42c')
-	# suzy= api.user(user_id="1507979106")
-	# recent_media = suzy.user_media_feed()
-	recent_media, next_ = api.user_recent_media(user_id="1507979106",count=50)
-	while next_:
-		more_media, next_ = api.user_recent_media(with_next_url=next_)
-		recent_media.extend(more_media)	
+def instagram_page(request, page_number='1') :
+	page_number = int(page_number)
+	photo_page = 8		# 한 페이지당 보이는 사진 수
 
-	# for media in recent_media:
-	# 	s += '<img src="'+media.images["thumbnail"].url+'">'
+	photo = Instagram.getData()
+	total_photos = len(photo)		# 총 사진 수
+	total_page = (total_photos + (photo_page - 1)) // photo_page		# 총 페이지 수
 
-	s = []
-	numPerPage = 8
+	# 페이지 예외 처리
+	if page_number < 1 :
+		page_number = 1
+	elif page_number > total_page :
+		page_number = total_page
 
-	for media in recent_media :
-		s += [media.images['standard_resolution'].url]
+	photo = photo[(page_number-1)*photo_page : page_number*photo_page]		# 페이지에 보여질 사진들
 
-	# return HttpResponse(s)
-	c = {'photo':s[:numPerPage]}
+	prev_page = (page_number - 1) // 10 * 10			# 이전 페이지 구하기
+	next_page = (page_number - 1) // 10 * 10 + 11		# 다음 페이지 구하기
+
+
+	page_list = [page+1 for page in range(prev_page, (next_page < total_page and next_page-1) or total_page)]		# 페이지 수들
+
+	c = {'photo':photo, 'page_list':page_list, 'page_number':page_number, 'total_page':total_page, 'prev_page':prev_page, 'next_page':next_page}
+
+	###########################################
 	navbar = Navbar(request)
 	navbar.get_current_path()
 	navbar.user_setting()
-	c.update(navbar.context_dict())		
+	c.update(navbar.context_dict())
+	###########################################
+
 	return render(request,"photo/insta.html",c)
 
-def instagram_page(request) :
-	curPage = request.GET['currentPage']
-	numPerPage = 8
+@login_required
+@csrf_exempt
+def comment_push(request) :
+	link = request.POST.get('photo')
+	try :
+		pk = Photos.objects.get(link=link)
+	except ObjectDoesNotExist :
+		data = {'alert' : 'no photos'}
+		return HttpResponse(simplejson.dumps(data), content_type="application/json")
 
-	api = InstagramAPI(client_id='1118900683bb413993f5e374ac9ea021', client_secret='d20ea751a7be44adb41ac19d3ad6b42c')
-	recent_media, next_ = api.user_recent_media(user_id="1507979106",count=50)
-	while next_:
-		more_media, next_ = api.user_recent_media(with_next_url=next_)
-		recent_media.extend(more_media)
+	try :
+		u = User.objects.get(username=request.user.username)
+	except ObjectDoesNotExist :
+		data = {'alert' : 'no user'}
+		return HttpResponse(simplejson.dumps(data), content_type="application/json")
 
-	s = []
+	com = PhotoComments(
+		user = u,
+		photo = pk,
+		comments = request.POST.get('comments', 'Nothing'),
+		pub_date = datetime.now()
+		)
+	com.save()
 
-	for media in recent_media :
-		s += [media.images['standard_resolution'].url]
+	try :
+		user = MyUser.objects.get(nickname=str(request.user.myuser))
+	except ObjectDoesNotExist :
+		data = {'alert' : 'no user nickname'}
+		return HttpResponse(simplejson.dumps(data), content_type="application/json")
 
-	s = s[(curPage-1)*numPerPage:curPage*numPerPage]
-	c = {'photo':s}
-	return render(request,"photo/insta.html",c)
+	data = {
+		'user' : user.nickname,
+		'comments' : com.comments,
+		'pub_date' : str(com.pub_date.strftime('%Y-%m-%d')),
+		'alert' : ''
+	}
+
+	return HttpResponse(simplejson.dumps(data), content_type="application/json")
+
+@csrf_exempt
+def comment_show(request) :
+	link = request.POST.get('photo')
+
+	try :
+		pk = Photos.objects.get(link=link)
+	except ObjectDoesNotExist :
+		data = {'alert' : 'no photos'}
+		return HttpResponse(simplejson.dumps(data), content_type="application/json")
+
+	com = PhotoComments.objects.filter(photo=pk).order_by('pub_date')
+
+	if len(com) > 0 :
+		user, comments, pub_date = [], [], []
+		for c in com :
+			try :
+				u = User.objects.get(username=str(c.user))
+			except ObjectDoesNotExist :
+				data = {'alert' : 'no user'}
+				return HttpResponse(simplejson.dumps(data), content_type="application/json")
+
+			user += [u.myuser.nickname]
+			comments += [c.comments]
+			pub_date += [str(c.pub_date)]
+		data = {
+			'user' : user,
+			'comments' : comments,
+			'pub_date' : pub_date,
+			'alert' : ''
+		}
+	else :
+		data = {
+			'comments' : '',
+			'alert' : ''
+		}
+
+	return HttpResponse(simplejson.dumps(data), content_type="application/json")

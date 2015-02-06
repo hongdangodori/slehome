@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+	<link href="{% static "fullpage/jquery.fullPage.css" %}" rel="stylesheet" type="text/css" />
+	<script src="{% static "fullpage/vendors/jquery.slimscroll.min.js" %}"></script>
+    <script src="{% static "fullpage/vendors/jquery.easings.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "fullpage/jquery.fullPage.min.js" %}"></script>
+
+    <script type="text/javascript">
+	$(document).ready(function() {
+	    $('#fullpage').fullpage({
+	        //Navigation
+	        menu: '#navbar_menu',
+	        anchors:['Intro', 'History', 'Join'],
+	        navigation: false,
+	        navigationPosition: 'right',
+	        navigationTooltips: ['firstSlide', 'secondSlide'],
+	        slidesNavigation: true,
+	        slidesNavPosition: 'bottom',
+
+	        //Scrolling
+	        css3: true,
+	        scrollingSpeed: 400,
+	        autoScrolling: true,
+	        scrollBar: true,
+	        //#easing: 'easeInQuart',
+	        easingcss3: 'ease',
+	        loopBottom: true,
+	        loopTop: true,
+	        loopHorizontal: true,
+	        //#continuousVertical: true,
+	        normalScrollElements: '#element1, .element2',
+	        scrollOverflow: true,
+	        touchSensitivity: 15,
+	        normalScrollElementTouchThreshold: 1,
+
+	        //Accessibility
+	        keyboardScrolling: true,
+	        animateAnchor: true,
+	        recordHistory: true,
+
+	        //Design
+	        controlArrows: true,
+	        verticalCentered: true,
+	        resize : false,
+	        sectionsColor : ['#fff', '#ccc', '#fff'],
+	        paddingTop: '70px',
+	        //#paddingBottom: '10px',
+	        //#fixedElements: '#header, .footer',
+	        responsive: 0,
+
+	        //Custom selectors
+	        sectionSelector: '.section',
+	        slideSelector: '.slide',
+
+	        //events
+	        onLeave: function(index, nextIndex, direction){},
+	        afterLoad: function(anchorLink, index){},
+	        afterRender: function(){},
+	        afterResize: function(){},
+	        afterSlideLoad: function(anchorLink, index, slideAnchor, slideIndex){},
+	        onSlideLeave: function(anchorLink, index, slideIndex, direction){}
+	    });
+	});
+	</script>
+
+	<style>
+        .section{
+            font-size: 6em;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block main_content %}
+<div id="fullpage">
+    <div class="section">>.<</div>
+    <div class="section">
+        <div class="slide">>.<</div>
+        <div class="slide">>.<</div>
+        <div class="slide">>.<</div>
+    </div>
+    <div class="section">>.<</div>
+</div>
+{% endblock %}

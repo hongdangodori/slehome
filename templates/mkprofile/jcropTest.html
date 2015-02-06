@@ -1,0 +1,49 @@
+{% extends "wiki/wiki_base.html" %}
+
+{% block title %}
+
+instagram
+
+{% endblock %}
+
+{% block content %}
+	<script type="text/javascript">
+		jQuery(function($){
+			$('#target').Jcrop({
+				onSelect: showCoords,
+				// onChange: showCoords,
+				aspectRatio: 1
+			});
+		});
+
+ 		function showCoords(c){
+			var rx=100/c.w;
+			var ry=100/c.h;
+
+			$('#preview').css({
+				width: Math.round(rx*300) + 'px',
+				height: Math.round(ry * 200) + 'px',
+				marginLeft: '-'+Math.round(rx * c.x)+'px',
+				marginTop: '-'+Math.round(rx * c.y)+'px'
+			});
+
+			jQuery('#x1').val(c.x);
+			jQuery('#y1').val(c.y);
+			jQuery('#w').val(c.w);
+			jQuery('#h').val(c.h);
+		};
+		
+	</script>
+	<img src="http://54.169.79.59/media/IU/6.png" id="target">
+	<div class="thumnail" style="position:relative;width:200px;height:200px;overflow:hidden">
+		<img src="http://54.169.79.59/media/IU/6.png" id="preview"/>
+	</div>
+	<form method="post" >{% csrf_token %}
+		<input type="submit" value="crop the image"/>
+		<input type="hidden" id="image_path" name="image_path" value="/home/sle/media/IU/6.png"/>
+		<input type="hidden" size="4" id="x1" name="x1"/>
+		<input type="hidden" size="4" id="y1" name="y1"/>
+		<input type="hidden" size="4" id="w" name="w"/>
+		<input type="hidden" size="4" id="h" name="h"/>
+	</form>
+{% endblock %}

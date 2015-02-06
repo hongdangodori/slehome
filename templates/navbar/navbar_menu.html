@@ -1,8 +1,8 @@
 {% if user.is_active %}
   {% for menu in menu_list %}
   	{% if menu.display == True %}
-  		{% with "/sle/"|add:menu.menu.lower|add:"/" as menu_path %}
-	  		{% if current_path == menu_path %}
+  		{% with "/sle/"|add:menu.menu.lower as menu_path %}
+	  		{% if menu_path in current_path %}
 	  			<li class="active"><a href="{{ base_path }}{{ menu.link }}"
 	  				{% if menu.menu.lower == "wiki" %}
 	  					target="_blank"
@@ -22,14 +22,22 @@
 	{% endfor %}
 
 {% else %}
-  {% for menu in menu_list_for_nonmembers %}
+	{% for menu in menu_list_for_nonmembers %}
 		{% if menu.display == True %}
-  		{% with "/sle/"|add:menu.menu.lower|add:"/" as menu_path %}
+		{% with "/sle/"|add:"#"|add:menu.menu as menu_link %}
+		<li data-menuanchor={{ menu }} 
+		{% if menu_link == current_path or menu.menu == "Intro" and current_path == "/sle/" %}
+			class="active"
+		{% endif %}
+		><a href="{{ menu_link }}">{{ menu }}<span class="sr-only"></span></a></li>
+
+  		{% comment %}{% with "/sle/"|add:menu.menu.lower|add:"/" as menu_path %}
 	  		{% if current_path == menu_path %}
 	  			<li class="active"><a href="{{ base_path }}{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
 	  		{% else %}
 	  			<li><a href="{{ base_path }}{{ menu.link }}">{{ menu }}<span class="sr-only"></span></a></li>
 	  		{% endif %}
+	  	{% endcomment %}
 	  	{% endwith %}
 		{% endif %}
 	{% endfor %}

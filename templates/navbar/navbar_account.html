@@ -1,0 +1,8 @@
+{% if user.is_authenticated %}
+  {% include "navbar/navbar_account_information.html" %}
+  {% include "navbar/navbar_account_logout.html" %}
+
+{% else %}
+  {% include "navbar/navbar_account_register.html" %}
+  {% include "navbar/navbar_account_login.html" %}
+{% endif %}

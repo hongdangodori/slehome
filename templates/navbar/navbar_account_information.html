@@ -1,0 +1,7 @@
+<li><a href="/sle/account">
+{% if user.is_active %}
+	개인정보 변경
+{% else %}
+	You haven't been approved yet, {{ nickname }}.
+{% endif %}
+</a></li>

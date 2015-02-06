@@ -1,0 +1,33 @@
+.list-group-item.active,.list-group-item.active:hover,.list-group-item.active:focus {
+	color: #555559;
+	background-color:#e7e7e7;
+	border-color:#e7e7e7;
+}
+
+.affix-top,.affix {
+	position: static;
+}
+
+@media (min-width: 992px) {
+
+  #sidebar.affix-top {
+  position: static;
+  }
+  
+  #sidebar.affix {
+  position: fixed;
+  top: 70px;;
+  }
+
+}
+
+.account-info-category {
+  color: gray;
+  display: inline;
+}
+
+.account-info-content {
+  font-weight: bold;
+  /* font-family: 'Nanum Gothic', sans-serif; */
+  display: inline;
+}

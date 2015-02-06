@@ -1,0 +1,79 @@
+/* viewMemo.css */
+
+/*@media (min-width: 992px) {
+  .container {
+    max-width: 970px;
+  }
+.col-md-4 {
+    width: 33.33333333333333%;
+  }
+  @media (min-width: 768px) {
+  .container {
+    max-width: 750px;
+  }
+  .col-sm-push-6 {
+    left: 50%;
+  }
+  .col-xs-12 {
+  width: 100%;
+}*/
+.box1 {
+	display: inline-block;
+	color: #ffffff;
+	background-color: rgb(51, 122, 183);
+	margin: 4px;
+	border-radius: 10px;
+	width: 100%;
+	max-width: 750px;
+}
+.box2 {
+	display: inline-block;
+	color: #ffffff;
+	background-color: rgb(92, 184, 92);
+	margin: 4px;
+	border-radius: 10px;
+	width: 100%;
+	max-width: 750px;
+}
+.box3 {
+	display: inline-block;
+	color: #ffffff;
+	background-color: rgb(91, 192, 222);
+	margin: 4px;
+	border-radius: 10px;
+	width: 100%;
+	max-width: 750px;
+}
+.box4 {
+	display: inline-block;
+	color: #ffffff;
+	background-color: rgb(240, 173, 78);
+	margin: 4px;
+	border-radius: 10px;
+	width: 100%;
+	max-width: 750px;
+}
+.box5 {
+	display: inline-block;
+	color: #ffffff;
+	background-color: rgb(217, 83, 79);
+	margin: 4px;
+	border-radius: 10px;
+	width: 100%;
+	max-width: 750px;
+}
+
+.com-user {
+	text-align: left;
+	text-indent: 10px;
+}
+.com-content {
+	text-align: left;
+	padding: 10px;
+}
+.com-date {
+	text-align: right;
+	direction: rtl;
+	text-indent: 10px;
+}
+

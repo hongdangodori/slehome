@@ -1,0 +1,40 @@
+{% load widget_tweaks %}
+<li class="dropdown">
+  <a data-target="#" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Login<span class="caret"></span></a>
+  <ul class="dropdown-menu" role="menu" id="login">
+    <form role="form" accept-charset="UTF-8" action="." method="post" style="padding-left:10%; padding-right:10%;">{% csrf_token %}
+
+      <div class="form-group">
+        <label for="user_id">User ID</label>
+        {{ login_form.user_id|attr:"placeholder:User ID"|attr:"class:form-control" }}
+      </div>
+
+      <div class="form-group">
+        <label for="user_password">Password</label>
+        {{ login_form.user_password|attr:"placeholder:Password"|attr:"class:form-control" }}
+      </div>
+
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"> Remember me
+        </label>
+      </div>
+
+      <li class="divider"></li>
+
+      {% if error_state == None %}
+        {% comment %}pass{% endcomment %}
+      {% elif error_state == "wrong_id_or_password" %}
+        <p style="color:red";>Wrong ID and/or password</p>
+        <li class="divider"></li>
+      {% elif error_state == "forms_not_filled" %}
+        <p style="color:red";>Empty form(s)</p>
+        <li class="divider"></li>
+      {% else %}
+        {% comment %}pass{% endcomment %}
+      {% endif %}
+
+      <button type="submit" class="btn btn-default" name="login">Login</button>
+    </form>
+  </ul>
+</li>

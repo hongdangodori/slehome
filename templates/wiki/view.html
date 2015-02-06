@@ -4,25 +4,14 @@
 {{page_name}}
 
 {% endblock %}
-
+<!-- page를 보여주기 위한 템플릿 -->
 
 {% block content %}
-	<script type="text/javascript">
-		function del_file(file_name,file_count){
-			var check = confirm(file_name+" 파일을 삭제하시겠습니까?");
-	      	  /* if(check == true) else false */
-	      	if(check){ 
-	      		location.href="/sle/wiki/delete/{{page_name}}/"+file_count;
-	      	}
-	      	else{
-				
-	      	}
-		}
-	</script>
 	<div class='container' style="word-break: break-all;">
 		<h1>{{page_name}}</h1>
 		
 		<div>
+			<!-- edit 및 history page로 이동하게 해주는 것들 -->
 			{{pub_date}}
 
 			{% if is_history == False %}
@@ -33,18 +22,28 @@
 		</div>
 		<hr />
 		<div class='container'>	
+			<!-- file 목록 -->
 			{% for file_data in file_list %}
 			<p>
 				<a href='/sle/wiki/download/{{page_name}}/{{file_data.count}}/'>{{file_data.file_name}}</a>
-				<a onclick="del_file('{{file_data.file_name}}',{{file_data.count}})" style="cursor:pointer">삭제</a>
+				<a onclick="del_file('{{file_data.file_name}}',{{file_data.count}},'{{page_name}}')" style="cursor:pointer">삭제</a>
 				<!--<a href='/sle/wiki/{{page_name}}/delete/{{file_data.count}}/'>삭제</a>-->
 			</p>
 		{% endfor %}
 		{% if is_history == False %}
-	
-			<form  class="form-inline" action="/sle/wiki/upload/{{page_name}}/" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
+		<!-- file upload를 위한 form -->
+			<form id="file_upload" class="form-inline" action="/sle/wiki/upload/{{page_name}}/" role="form" method="post" enctype="multipart/form-data">{% csrf_token %}
 				<div class="form-group">
-					<input type="file" name="file" id="id_file" />
+					<input type="file" name="file" id="id_file" class="filestyle" data-buttontext="Find file" tabindex="-1" style="position: absolute; clip: rect(0px 0px 0px 0px);"><div class="bootstrap-filestyle input-group">
+						<input type="text" id="upload_file_name"class="form-control " disabled=""> 
+						<span class="group-span-filestyle input-group-btn" tabindex="0">
+							<label for="id_file" class="btn btn-default ">
+								<span class="glyphicon glyphicon-folder-open">
+								</span> 
+								Find file
+							</label>
+						</span>
+					</div>
 				</div>
 				<div class="form-group">
 					<input type='submit' class='btn btn-success' value='파일 업로드'>

@@ -9,11 +9,11 @@ urlpatterns = patterns('',
 	url(r'^listSpecificPageWork/$', views.listSpecificPageWork),
 	url(r'^listSpecificPageWork/(?P<currentPage>\d+)/currentPage/$', views.listSpecificPageWork), #, name='listSpecificPageWork'),
 	url(r'^viewWork/$', views.viewWork),
-	url(r'^listSearchedSpecificPage/$', views.listSearchedSpecificPage),
 	url(r'^listSpecificPageUpdate/$', views.listSpecificPageUpdate),
 	url(r'^updateBoard/$', views.updateBoard),
 	url(r'^deleteSpecificRow/$', views.deleteSpecificRow),
 	url(r'^searchWithSubject/$', views.searchWithSubject),
+	url(r'^listSearchedSpecificPage/$', views.listSearchedSpecificPage),
 	url(r'^pushLike/$', views.pushLike),
-
+	url(r'^pushComment/$', views.pushComment),
 )

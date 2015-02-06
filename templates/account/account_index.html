@@ -1,0 +1,65 @@
+{% extends "account/account_base.html" %}
+{% load widget_tweaks %}
+
+{% block account_content %}
+
+<div class="container">
+	<h1>{{ user.myuser.nickname }}'s Account Information</h1>
+</div>
+
+<div class="container" style="margin-bottom:3%; width:100%; margin-top:3%">
+	<div class="row">
+
+
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading">Basic Information</div>
+			<!-- List group -->
+			<ul class="list-group">
+				<li class="list-group-item"><p class="account-info-category">Name: </p><p class="account-info-content">{{ user.myuser.fullname }}</p>
+				</li>
+				<li class="list-group-item"><p class="account-info-category">Student Number: </p><p class="account-info-content">{{ user.myuser.stu_num }}</p></li>
+			</ul>
+		</div>
+
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading">Point and Level</div>
+			<!-- List group -->
+			<ul class="list-group">
+				<li class="list-group-item"><p class="account-info-category">Level: </p><p class="account-info-content">{{ user.myuser.level }}</p></li>
+				<li class="list-group-item"><p class="account-info-category">Point: </p><p class="account-info-content">{{ user.myuser.point }} 
+				{% if user.myuser.point == 0 or user.myuser.point == 1 %}
+				pt
+				{% else %}
+				pts
+				{% endif %}</p></li>
+			</ul>
+		</div>
+
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading">Account Information</div>
+			<!-- List group -->
+			<ul class="list-group">
+				<li class="list-group-item"><p class="account-info-category">ID: </p><p class="account-info-content">{{ user.username }}</p></li>
+				<li class="list-group-item"><p class="account-info-category">Nickname: </p><p class="account-info-content">{{ user.myuser.nickname }}</p></li>
+			</ul>
+		</div>
+
+		<div class="panel panel-default">
+			<!-- Default panel contents -->
+			<div class="panel-heading">Additional Information</div>
+			<!-- List group -->
+			<ul class="list-group">
+				<li class="list-group-item"><p class="account-info-category">Birthday: </p><p class="account-info-content">{{ user.myuser.birthday }}</p></li>
+				<li class="list-group-item"><p class="account-info-category">Phone Number: </p><p class="account-info-content">{{ user.myuser.phone_num }}</p></li>
+				<li class="list-group-item"><p class="account-info-category">Email: </p><p class="account-info-content">{{ user.email }}</p></li>
+			</ul>
+		</div>
+
+
+	</div>
+</div>
+
+{% endblock %}

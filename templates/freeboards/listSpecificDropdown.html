@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <table class="table" cellspacing=1 width=700 border=0>
+    <table class="table" width=700>
         <tr>
             <td>Total writings: {{ totalCnt }}</td>
             <td><p align=right> Page:{{ currentPage }}</td>
@@ -16,23 +16,16 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a class="accordian-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse{{boardRow.id}}">
-                            {{ boardRow.title }}<p aligh=right>{{boardRow.user}}, {{boardRow.pub_date}}</p></a>
+                            {{ boardRow.title }}<p style="display:inline; float:right; color:#bbbbbb;">{{boardRow.user.myuser}}, {{boardRow.pub_date}}</p></a>
                         </h4>
                     </div>
                     <div id="collapse{{boardRow.id}}" class="panel-collapse collapse">
                         <div class="panel-body">
                             {{ boardRow.contents }}<br>
                             <div align=right>
-                            User: {{ boardRow.user }}<br>
+                            User: {{ boardRow.user.myuser }}<br>
                             Published Date: {{ boardRow.pub_date}}<br>
                             </div>
-                            <a class="accordian-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                            {{ boardRow.title }}</a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse in">
-                        <div class="panel-body">
-                            {{ boardRow.contents }}
                         </div>
                     </div>
                 </div>
@@ -43,38 +36,8 @@
     </div>
 
 
-
     
-    <script type="text/javascript">
-
-    var elements = document.getElementsByTagName("div");
-
-    // 모든 영역 접기
-    for (var i = 0; i < elements.length; i++) {
-      if (elements[i].className == "panel panel-default") {
-        elements[i].style.display="none";
-      } else if (elements[i].className == "panel panel-default") {
-        elements[i].onclick=switchDisplay;
-      }
-    }
-
-    // 상태에 따라 접거나 펼치기
-    function switchDisplay() {
-
-      var parent = this.parentNode;
-      var target = parent.getElementsByTagName("div")[1];
-
-      if (target.style.display == "none") {
-        target.style.display="block";
-      } else {
-        target.style.display="none";
-      }
-      return false;
-    }
-    </script>
-
-    
-    <table class="table" cellspacing=1 width=700 border=1 >
+    <table class="table" width=700>
         <tr> <td>
             {% for page in totalPageList %}
                 <a href="/sle/freeboards/listSpecificPageWork?currentPage={{page}}" >
@@ -94,7 +57,7 @@
 
     <table class="table" width=700>
         <tr>
-            <td><input type=button value="Write"  OnClick="window.location='/sle/freeboards/writing_idWriteForm'">    </td>
+            <td><input type=button value="Write" OnClick="window.location='/sle/freeboards/showWriteForm'">    </td>
             
             <td><form name=searchf method=post action="/sle/freeboards/searchWithSubject/">
                 <p align=right>

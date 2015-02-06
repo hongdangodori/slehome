@@ -11,7 +11,9 @@ urlpatterns = patterns('',
     url(r'^sle/wiki/', include('wiki.urls'), name="wiki"),
     url(r'^sle/members/', include('members.urls'), name="members"),
     url(r'^sle/photo/', include('photo.urls'), name="photos"),
-    url(r'^', include('main.urls'), name="main"),
+    url(r'^sle/', include('account.urls'), name="account"),
+    url(r'^sle/infoboards/', include('infoboards.urls'), name="infoboards"),
+    url(r'^sle/imagecrop/', include('imagecrop.urls'), name="imagecrop"),
 )
 
 urlpatterns += patterns('',

@@ -7,11 +7,26 @@
 
 
 {% block content %}
+<!-- 페이지 수정 및 생성을 위한 템플릿 -->
 <h1>Editing {{page_name}}</h1>
 
-<form method="post" action="/sle/wiki/save/{{page_name}}/{{section}}/">{% csrf_token %}
-	<textarea name="content" rows="20" cols="60">{{content}}</textarea>
-	<br/>
-	<input type="submit" value="Save Page"/>
-</form>
+<div style="float:left; margin-right:10px">
+	<form method="post" action="/sle/wiki/save/{{page_name}}/{{section}}/">{% csrf_token %}
+		<textarea name="content" rows="20" cols="60">{{content}}</textarea>
+		<br/>
+		<input type="submit" class="btn btn-default" value="Save Page"/>
+	</form>
+</div>
+
+<div style="float:left; margin-right:20px">
+	{% autoescape off %}
+	{{manual_explain}}
+	{% endautoescape %}
+</div>
+
+<div style="float:left;">
+	{% autoescape off %}
+	{{manual_content}}
+	{% endautoescape %}
+</div>
 {% endblock %}

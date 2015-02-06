@@ -1,8 +1,120 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block header %}
+  <link href="{% static "mycss/viewMemo.css" %}" rel="stylesheet" />
 
-{% block content %}
-    <title>{{ boardData.title }}</title>
-  
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+      $('#btn-like').click(function(){
+        var e = $('#btn-like').css('background-color');
+        $.ajax({
+          url : '/sle/freeboards/pushLike/',
+          data : {
+            writing_id:{{writing_id}},
+          },
+          dataType : "json",
+          success:function(data){
+            // alert(data.blbl);
+            if(e == 'rgb(59, 89, 152)') {
+              $('#btn-like').css('background-color', '#ffffff').css('color', '#000000');
+              $('#btn-like').text(data.dLike);
+            } else {
+              $('#btn-like').css('background-color', '#3b5998').css('color', '#ffffff');
+              $('#btn-like').text(data.dLike);
+              // $('#span-like').textContent="Like"+data.likeCnt;
+            }
+          },
+          failure: function(data){
+            alert('fail!!');
+          },
+        });
+      });
+
+      $('#form-com-id').submit(function() {
+        var com = $('#idcomment').val();
+          $.ajax({
+            url : "/sle/freeboards/pushComment/",
+            type : "POST",
+            data : {
+              writing_id : '{{writing_id}}',
+              comments : com,
+              csrfmiddlewaretoken: '{{csrf_token}}',
+            },
+            dataType : "json",
+            success:function(data){
+              $('#idcomment').val('');
+              
+              /* create elements and class matching */
+              var divcomgrp = document.getElementsByClassName('comments-group');
+              var divgrid = document.createElement("div");
+              divgrid.className = 'col-xs-12 col-sm-6 col-md-4';
+
+              var divbox = document.createElement('div');
+              if(data.comCnt % 5 == 0) {
+                divbox.className = 'box5';  
+              } else if (data.comCnt % 5 == 1) {
+                divbox.className = 'box1';
+              } else if (data.comCnt % 5 == 2) {
+                divbox.className = 'box2';
+              } else if (data.comCnt % 5 == 3) {
+                divbox.className = 'box3';
+              } else if (data.comCnt % 5 == 4) {
+                divbox.className = 'box4';
+              }
+              // quotient = data.comCnt / 5;
+              
+              var divcontainer = document.createElement("div");
+              divcontainer.className = 'boxbox';
+              var divuser = document.createElement("div");
+              divuser.className = 'com-user';
+              var divcont = document.createElement("div");
+              divcont.className = 'com-content';
+              var divdate = document.createElement("div");
+              divdate.className = 'com-date';
+
+              /* create paragraphs */
+              var puser = document.createElement('p');
+              var textnode = document.createTextNode(data.user);
+              puser.appendChild(textnode);
+              var butdel = document.createElement('button');
+              butdel.innerHTML = '&times';
+              butdel.onclick = deleteCom;
+              puser.appendChild(butdel);
+
+              var pcomments = document.createElement('p');
+              var textnode2 = document.createTextNode(data.comments);
+              pcomments.appendChild(textnode2);
+
+              var pdate = document.createElement('p');
+              var textnode3 = document.createTextNode(data.pub_date);
+              pdate.appendChild(textnode3);
+
+              /* appending children */
+              divuser.appendChild(puser);
+              divcont.appendChild(pcomments);
+              divdate.appendChild(pdate);
+
+              divcontainer.appendChild(divuser);
+              divcontainer.appendChild(divcont);
+              divcontainer.appendChild(divdate);
+
+              divbox.appendChild(divcontainer);
+              divgrid.appendChild(divbox);
+              divcomgrp[0].appendChild(divgrid);
+            },
+            failure: function(data){
+              alert('fail!!');
+            },
+          });
+      });
+  });
+
+  function deleteCom() {
+    alert('댓글은 지워지지 않습니다. ^^ \n신중하게 작성하세요. 낄낄.');
+  }
+  </script>
+
   <script language="javascript">
       function boardlist(){
           var s = "{{ searchStr }}";
@@ -18,44 +130,55 @@
       }
 
       function boarddelete(){
-          location.href='/sle/freeboards/deleteSpecificRow?writing_id={{writing_id}}&currentPage={{currentPage}}';
+        if (confirm("Are you sure to Delete?") == true) {
+            location.href='/sle/freeboards/deleteSpecificRow?writing_id={{writing_id}}&currentPage={{currentPage}}';
+        } else {
+            return;
+        }
       }
      
   </script>
-  
+{% endblock %}
 
 
+{% block content %}
+<title>{{ boardData.title }}</title>
 
-  <div class="writing_view">
-    <h3>{{ boardData.title }}</h3>
+<div class="writing_view">
+  <h3>{{ boardData.title }}</h3>
 
-    <table class="table" cellspacing = 0 cellpadding = 5 border = 1 width=500>
-        <tr><td><b>Hits</b></td><td> {{ boardData.hits }} </td></tr>
-        <tr><td><b>Category </b></td><td> {{ boardData.category }} </td></tr>
-        <tr><td><b>Name </b></td><td> {{ boardData.user }} </td></tr>
-        <tr><td><b>Title </b></td><td> {{ boardData.title }} </td></tr>
-        <tr><td><b>Contents </b></td><td> {{ boardData.contents }} </td></tr>
-    </table>
-  </div>
-
-
-    <div class="like-btn" align="center">
-      {% include "freeboards/like.html" %}
-    </div>
-
-    <br>
-
-    <table class="table" cellspacing = 0 cellpadding = 0 border = 0 width=500>
-        <tr><td>
-            <input type=button value="Edit" OnClick="javascript:boardmodify()">
-            <input type=button value="List" OnClick="javascript:boardlist()">
-            <input type=button value="Delete" OnClick="javascript:boarddelete()">
-        </td></tr>
-    </table>
+  <table class="table" width=500>
+      <tr><td><b>Hits</b></td><td> {{ boardData.hits }} </td></tr>
+      <tr><td><b>Category </b></td><td> {{ boardData.category }} </td></tr>
+      <tr><td><b>Name </b></td><td> {{ boardData.user.myuser }} </td></tr>
+      <tr><td><b>Title </b></td><td> {{ boardData.title }} </td></tr>
+      <tr><td><b>Contents </b></td><td> {{ boardData.contents }} </td></tr>
+  </table>
+</div>
 
 
-  <div class="comment_table">
-    {% include %}
-  </div>
-  
- {% endblock %}
+<div class="like-btn group" align="center">
+  {% include "freeboards/like.html" %}
+</div>
+
+<br>
+
+<div class="buttons on viewMemo">
+  <table class="table" cellspacing = 0 cellpadding = 0 border = 0 width=500>
+      <tr><td>
+      
+      {% if boardData.user == currentUser %}
+          <input type=button class="btn btn-default" value="Edit" OnClick="javascript:boardmodify()">
+          <input type=button class="btn btn-default" value="Delete" OnClick="javascript:boarddelete()">
+      {% endif %}
+
+      <input type=button class="btn btn-default" value="List" OnClick="javascript:boardlist()">
+      </td></tr>
+  </table>
+</div>
+
+<div class="comment_table">
+  {% include "freeboards/comments.html" %}
+</div>
+
+{% endblock %}

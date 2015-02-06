@@ -1,12 +1,12 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
 class Page(models.Model):
+	author = models.ForeignKey(User)
 	page_name = models.CharField(max_length=20)
 	content = models.TextField(null=True)
-	author = models.IntegerField(default=0)
 	pub_date = models.DateTimeField('date published')
 	new_version = models.BooleanField(default=False)
 	def __str__(self):

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from freeboards.models import FreeBoard
+from freeboards.models import FreeBoards
 
 # Register your models here.
-admin.site.register(FreeBoard)
+admin.site.register(FreeBoards)
